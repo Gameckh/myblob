@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【客户故事】从需求到深入SpreadJS（二） - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2021/04/07/spjs-custom-story-deep-into-spreadjs-2/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg-deep-into-spreadjs.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                    <h1>【客户故事】从需求到深入SpreadJS（二）</h1>
+                    <h2 class="subheading">某电商服务平台的Excel线上化故事</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2021-04-07
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><strong>SpreadJS需求解决方案和优势：</strong></p>
+<p>当时为了评估是否能够满足我们的需求，约了跟SpreadJS的技术人员的远程会议。当时我们这边一条条提需求，那边就直接演示实现方案，效果非常直观。结合上边说的那些需求，对应的解决方案思路也很清晰：</p>
+<p><strong>1、 并发：</strong></p>
+<p>由于<strong>SpreadJS是数据和模板分离的设计</strong>，填报人员只需要在页面上完成填报。提交时可以只提交填报好的数据json即可，服务器再也不用吭哧吭哧地分析Excel文件了。带宽消耗也直接节约了一半。</p>
+<p><strong>2、 对Excel操作和兼容性要求较高</strong></p>
+<p>在内部试用时，财务和客服的小姐姐们反馈，<strong>使用体验跟Excel几乎完全一样</strong>，不需要再特意培训。而且我们自己的大量<strong>Excel报表可以直接导入</strong>进去（二次开发后也可以实现批量和远程导入），包括图表、公式、表格样式等等一系列元素都可以直接导入线上操作。</p>
+<p><strong>3、 报表格式灵活多变</strong></p>
+<p>设计人员可以直接在线设计，或者把Excel设计好的报表，拿到Web端，做好<strong>数据绑定</strong>，提交保存成json格式即可（Spread JS的ssjson格式包括Excel文档的所有信息）</p>
+<p><strong>4、 支持公式计算</strong></p>
+<p><strong>支持了450多种（Excel一共480多种）公式</strong>，还可以自己开发扩展自定义公式，对财务也够用了。同时还<strong>支持所有Excel的引用操作</strong>，比如跨sheet引用、绝对引用、函数命名信息之类。</p>
+<p><strong>5、 工作流中的数据文档</strong></p>
+<p><strong>基本脱离了对文件的依赖</strong>，所有流程状态和依赖的数据都可以在数据库中记录，文件服务器只需要保存少量的模板文档即可（其实模板数量不大时可以直接放到数据库里，不过我们有现成的文件服务器）。这里节约了我们90%文件服务器的空间开销，运维的小伙伴半夜都要笑醒。</p>
+<p><strong>深入SpreadJS：</strong></p>
+<p>重点来了，其实最让我这个前端开发者感兴趣的就是SpreadJS的一些底层设计、以及对内存、性能平衡性的优化。对此我做了很多调研和学习，好在这方面资料不难找，常常可以在<a target="_blank" rel="noopener" href="https://gcdn.grapecity.com.cn/forum.php?mod=forumdisplay&fid=225&filter=typeid&typeid=274">葡萄城官方论坛的公开课版块</a>遇到一些相关的技术分享。下边是自己了解学习到的内容，做个简单总结：</p>
+<p><strong>1.   渲染性能：</strong></p>
+<p>性能肯定是每个深度表格控件用户最担心的问题。我们的数据量常常达到好几千条，而且Excel不方便分页（涉及前端的公式计算汇总），所以选型期间很担心。后来发现想多了，SpreadJS可以轻松加载50万条数据不喘气（<a target="_blank" rel="noopener" href="https://demo.grapecity.com.cn/spreadjs/BenchmarkSample/">官网性能演示示例</a>只能加载5万，我们自己扒下来测的50万）。后来深入了解才知道，解决这个问题，他们的思路是这样的：</p>
+<p>&lt;1&gt; 实时渲染 + Double buffering(翻译成双层缓存？)：</p>
+<p>用Canvas渲染表格部分，并且只渲染用户看到的部分内容，这就实现了加载1000行和加载100000行数据速度都很快，性能相差不大的现象。</p>
+<p>而Double buffering是为了解决连续渲染的连续性体验问题，也可以进一步提升渲染速度。这个名词估计听过的人少，但应该人人都体验过，Double buffering在游戏里其实很常见，当我们主控的人物在地图上奔跑时，游戏引擎会按照人物移动方向实时加载和渲染地图，这就避免了一次性加载超大地图时那漫长的等待。</p>
+<p><code>                                                                                     </code><img src="001.png"></p>
+<p>图片来源：<a target="_blank" rel="noopener" href="https://gcdn.grapecity.com.cn/forum.php?mod=viewthread&tid=86035&extra=page=1&filter=typeid&typeid=274">葡萄城公开课【SpreadJS性能优化】</a></p>
+<p>&lt;2&gt; 稀疏数组：</p>
+<p>SpreadJS对表格数据的存储优化采用了稀疏数组的数据结构。稀疏数组常用来优化二维数组（比如棋盘、地图等场景）的内存占用，但它有个天生的缺陷，就是访问性能慢。</p>
+<p><img src="002.png"></p>
+<p><img src="003.png"></p>
+<p>所以当时针对这个疑问，我给它做了压力测试，百万级别的遍历耗时200多ms。性能可以满足我们的需求。</p>
+<p><img src="004.png"></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/04/08/spjs-custom-story-deep-into-spreadjs-3/" data-toggle="tooltip" data-placement="top" title="【客户故事】从需求到深入SpreadJS（三）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/04/06/spjs-custom-story-deep-into-spreadjs-1/" data-toggle="tooltip" data-placement="top" title="【客户故事】从需求到深入SpreadJS（一）">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

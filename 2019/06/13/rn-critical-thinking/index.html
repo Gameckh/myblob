@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          《学会提问——批判性思维指南》读书笔记 - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2019/06/13/rn-critical-thinking/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                        
+                    </div>
+                    <h1>《学会提问——批判性思维指南》读书笔记</h1>
+                    <h2 class="subheading">Asking the right questions: a guide to critical thinking</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2019-06-13
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>我们身处于信息泛滥的时代，接受着来自各种渠道的观点。电视、网络、身边的朋友、以及所谓的“专家”等等，都在时刻影响着我们对问题的判断。我们不希望自己的大脑被这些所谓正确的论断和观点影响和摆布，因此学习和掌握批判性思维是必要的。</p>
+<p><strong>学习批判性思维需要准备的五点：</strong><br>&lt;1&gt; 改变思维：从海绵式思维过渡到淘金式思维。<br>&lt;2&gt; 克服情感：必须克服情感障碍，理性思考观点。<br>&lt;3&gt; 关注价值：关注有价值的问题和论点，而不是无意义的争论。<br>&lt;4&gt; 自我批判：批判性思维不是用来抵制外部观点，而是用于所有观点，包括自己。<br>&lt;5&gt; 反复练习：做一个清醒的学习者，而不是一个开心的傻子。</p>
+<p><strong>如何得到一个合理的结论？</strong><br>&lt;1&gt; 了解论题；<br>&ensp;1) 分清楚什么是论题，什么是结论。<br>&ensp;2) 理由是什么？<br>&ensp;3) 哪些词句有歧义？<br>&lt;2&gt; 分析逻辑；<br>&ensp;1) 什么是价值观冲突和价值观假设？<br>&ensp;2) 什么是描述性假设？<br>&ensp;3) 推理中存在谬误吗？<br>&lt;3&gt; 检验证据。<br>&ensp;1) 这些证据的可信度多大？<br>&ensp;2) 你发现干扰性原因了吗？<br>&ensp;3) 统计数据是否具有欺骗性？<br>&ensp;4) 哪些重要信息被遗漏了？</p>
+<p><strong>理由是什么？</strong><br>&lt;1&gt; 理由是对我们为什么要相信某一特定结论的解释。<br>&lt;2&gt; 如果我们仅仅是评价作者的结论，而不分析作者的推理，我们就会倾向于固守自己已有的观点，并迅速接受那些与自己的看法相同的结论。<br>&lt;3&gt; 论证有如下几个特征：目的性、质量不同、包括结论和理由两部分。</p>
+<p><strong>哪些词句有歧义？</strong><br>&lt;1&gt; 阅读一篇文章的最终目标是形成你自己的合理判断。<br>&lt;2&gt; 我们常常误解我们所看到的、听到的事情，因为我们认为某些词语的含义是明显的。<br>&lt;3&gt; 一个词语越抽象，就越可能有多种解释，因此也就需要作者做出更清晰的定义。<br>&lt;4&gt; 应当从一开始就避免与作者“心灵感应”。必须要成“你这么说是什么意思”的提问习惯，而不是“我知道你是什么意思”。<br>&lt;5&gt; 如果你不要求作者澄清有歧义的词语就接受了他的论证，那么你就没有真正理解你所赞同的结论。<br>&lt;6&gt; 词语的意思通常有三种表现方式：同义词、事例、“根据特定标准的定义”（类似医学辞典的词条解释）。<br>&lt;7&gt; 我们必须对词语的情感冲突倾向敏感，必须对歧义词对这种情感的促进作用敏感。</p>
+<p><strong>什么是价值观冲突什么是价值观假设？</strong><br>&lt;1&gt; 假设：一种没有明确表述的信念，这种信念支持外显的推理。<br>&lt;2&gt; “假设”的特点：<br>&ensp;1）隐藏的或没有清楚表述的（在多数情况下）；<br>&ensp;2）作者承认的；<br>&ensp;3）影响对结论的判断；<br>&ensp;4）具有潜在的欺骗性。<br>&lt;3&gt; 理由+价值观假设=结论<br>&lt;4&gt; 应当把确定价值观假设变成一种习惯。<br>&lt;5&gt; 价值观：人们认为值得为之努力、却没有明确表述的观念。这些观念为行为设立了标准，并通过这些标准来衡量行为的质量。<br>&lt;6&gt; 价值观假设：在一个特定的环境中，价值观假设是一种内隐的偏向，它代表着某种价值观胜过另一种价值观。<br>&lt;7&gt; 寻找价值观假设的一个良好开端是检查作者的背景。<br>什么是描述性假设<br>&lt;1&gt; 描述性假设：关于世界是什么样子，或者将来是什么样子的未阐明的观念。<br>&lt;2&gt; 寻找描述性假设的线索：<br>&ensp;1）坚持思考原因和结论之间的差距；<br>&ensp;2）寻找支持原因的观点；<br>&ensp;3）把自己当成作者或演讲者；<br>&ensp;4）换一个角度；<br>&ensp;5）认识到在原因中还可能存在一些能够获得优势的其他途径；<br>&ensp;6）避免使用不完全确定的原因作为假设。<br>&ensp;7）多学一些与论题有关的知识。</p>
+<p><strong>推理中存在谬误吗？</strong><br>&lt;1&gt; 谬误是作者为了说服你接受一个结论而可能使用的一种推理“骗术”。<br>&lt;2&gt; 寻找谬误的步骤：<br>&ensp;1）确认结论和理由。<br>&ensp;2）牢记结论并考虑可能与之相关的理由，把这些理由与作者提供的理由相比较。<br>&ensp;3）判定理由是否阐明了一个确切的、具体的优势或者不足，如果不是，则要谨慎对待。<br>&ensp;4）如果理由是真实的，那么要相信什么才能在逻辑上支持结论；是否要相信理由是真实的。<br>&ensp;5）这些假设有意义吗？<br>&ensp;6）通过能够引起强烈情感的短语来检查从相关理由中分离出来的可能性。<br>&lt;3&gt; 常见谬误整理汇总：<br>&ensp;1）人身攻击：不直接阐明原因，而是对一个人进行攻击或者侮辱。<br>&ensp;2）滑坡谬误：做出这样一个假设：当存在一些方法能够阻止一连串不可控的、不必要的事件发生时，采取某一措施会引发这些事件。（做了A，是否意味着就必须去做B）<br>&ensp;3）妄求完美：错误地假定，如果使用一种方法不能使该问题得到彻底解决，就不采用这种方法。<br>&ensp;4）移花接木：一个关键词在一个论据中被使用两个或两个以上的意义，一旦意义被确定转变了，这一论证就没有意义了。<br>&ensp;5）诉诸公众：试图通过偏爱多数人一致赞成的观点使某个观点合理化，错误地认为多数人支持的就是合理的。<br>&ensp;6）诉诸权威：通过引入一个在问题上缺少第一手专业知识的权威来支持结论。<br>&ensp;7）稻草人：歪曲对方的观点，使之易于攻击，因而，我们攻击的是一种事实上并不存在的观点。<br>&ensp;8）虚假的两难困境：当可能存在不止两个选择时，就假定仅存在两个选择。<br>&ensp;9）一厢情愿：做出错误的假设，即因为我们希望X是真实的或者错误的，那么X就是真实的或错误的。<br>&ensp;10）命名解释：错误地假定因为你已经给某个事件或行为提供了一个名称，就认为你已经充分地解释了此事。（爸爸的“中年危机”）<br>&ensp;11）晕轮效应：使用模糊的、情绪化的美德词汇来迫使我们没有仔细考察原因就支持某种观点。<br>&ensp;12）偷梁换柱：提出一个不相关的主题使读者的注意离开原来的论题，读者的注意离开当前的论证而转移到另一个论题上，有助于“赢得”辩论。这个谬误的过程如下：i）A是正在讨论的主题。ii）主题B被引入进讨论中，尽管它与A相关，但不是要讨论的。iii）主题A被放弃。<br>&ensp;13）窃取论点：在论证中，结论在推理中是一个假设。<br>&ensp;14）概括草率：仅仅根据群体中少数几个人的经历，就得出关于整个群体的结论。<br>&ensp;15）错误类比：当进行类比的两个事物存在重要的、与论题有关的差异时，会出现此类谬误。<br>&ensp;16）因果关系过度单纯化：根据一些不够充分的因素来解释某事件，过分强调某一个或某几个因素对事件的作用。<br>&ensp;17）混淆原因和结果：将原因与结果混淆在一起或没有认识到两件事可能是相互影响的。<br>&ensp;18）对共同原因的疏忽：没有认识到两件事可能因为另一个共同因素的影响而相互联系。<br>&ensp;19）在此之后、由此引起的错误：仅仅因为事件B在时间上晚于事件A发生，就认为事件B是由事件A引起的。</p>
+<p><strong>这些证据的可信度有多大？（I）</strong><br>&lt;1&gt; 支持一项声明的证据数量越多、质量越好，我们就越相信这项声明。<br>&lt;2&gt; 我们遇到的事实性声明有：<br>&ensp;1）描述性结论。<br>&ensp;2）支持描述性结论或说明性结论的理由。<br>&ensp;3）描述性假设。<br>&lt;3&gt; 在以下三种情况中，我们就倾向于认同一项声明：<br>&ensp;1）声明是众人一致认同的常识，如“举重能练出肌肉”。<br>&ensp;2）声明是某一个有充分理由支持的论证。<br>&ensp;3）传达信息的人为其声明提供了可靠证据，或我们知道的其他证据能支持该项声明。<br>&lt;4&gt; 证据的主要类型：直觉、个人的经验、他人的证词、权威的意见、个人的观察、案例、科学研究、类比<br>&lt;5&gt; 判断他人的证词需注意：<br>&ensp;1）选择性。<br>&ensp;2）个人的兴趣。<br>&ensp;3）被遗漏的信息。<br>&ensp;4）人为因素。</p>
+<p><strong>这些证据的可信度有多大？（II）</strong><br>&lt;1&gt; 人们倾向于看到或听到合乎自己意愿的东西，倾向于选择并记住某一事件中与自己的经历和背景最一致的部分。<br>&lt;2&gt; 科学方法，即其他合乎条件的人能够进行相似的观察并考察是否能得出相同的结果，在这种条件下得到的数据就是能别公众证实的数据，也就是能被重复验证的数据。<br>&lt;3&gt; 研究结果存在的问题：<br>&ensp;1）研究的质量有天壤之别。<br>&ensp;2）研究结果常常是相互矛盾的。<br>&ensp;3）研究结果并不能证明结论，最多只能说研究结果支持结论。<br>&ensp;4）研究者的期望、态度、价值观和需要等，使他们的提问、操作研究的方法以及解释研究结果的方式存在偏差。<br>&ensp;5）演讲者和作者经常歪曲或简化研究结论。<br>&ensp;6）研究所得的“事实”会随时间发生变化，尤其是关于人类行为的研究。<br>&ensp;7）不同研究的人为性不同。<br>&ensp;8）研究者在经济收益、地位、安全及其他方面的需要会影响其研究结果。<br>&lt;4&gt; 评价科学研究的线索：<br>&ensp;1）该科研报告的来源质量如何？<br>&ensp;2）还有没有其他线索能证明研究做得很好？<br>&ensp;3）该研究得到其他人的验证了吗？<br>&ensp;4）传达信息的人如何选择他们需要的研究呢？<br>&ensp;5）已有的证据是否具有较强的批判性思维？<br>&ensp;6）某些人是否有歪曲该研究的理由呢？<br>&ensp;7）该研究的条件是不是人为的？有没有被歪曲呢？<br>&ensp;8）可以推广到多大的范围？<br>&ensp;9）测量手段是否存在偏差或失真？<br>&lt;5&gt; 取样研究的推广：<br>&ensp;1）样本必须足够大才能证明结论或研究具有普遍意义。<br>&ensp;2）抽出的样本在广度或多样性上必须与得出结论的事件一致。<br>&ensp;3）抽样越随机，样本就越理想。<br>&lt;6&gt; 不能假设口头报告准确反映了真实态度。<br>&lt;7&gt; 千万要注意把动人的案例作为证据的情况。<br>&lt;8&gt; 评价类比的好坏：<br>&ensp;1）从多个方面比较两种事物的相似之处与不同之处。<br>&ensp;2）相似性与差异性之间的关联。当被比较的两种事物之间存在与论题有关的相似之处，但没有与论题有关的差异时，这样的类比才是强有力的。</p>
+<p><strong>你发现干扰性原因了吗？</strong><br>&lt;1&gt; 干扰性原因：一个看似合理、与作者的解释不通，但能说明一个已知的结果如何发生的解释。（对于同样的证据可能会有不同的解释）<br>&lt;2&gt; 大多数表述者只想你提供他们自己喜欢的解释。<br>&lt;3&gt; 许多因素的组合导致了事件的发生。<br>&lt;4&gt; 因果关系的四种可能性：<br>&ensp;1）X是引起Y的原因。<br>&ensp;2）Y是引起X的原因。<br>&ensp;3）由于第三个因素Z，X与Y相互联系。<br>&ensp;4）X与Y相互影响。<br>&lt;5&gt; 我们的倾向是简化世界，但是世界往往需要复杂的解释。<br>&lt;6&gt; 评估干扰性原因：<br>&ensp;1）逻辑合理性。<br>&ensp;2）与其他知识的一致性。<br>&ensp;3）是否曾经成功地解释或预测了某些事件。</p>
+<p><strong>统计数据是否具有欺骗性？</strong><br>&lt;1&gt; 定义一个平均数有三种不同的方法：<br>&ensp;1）算术平均数。<br>&ensp;2）中位数。<br>&ensp;3）众数。<br>&lt;2&gt; 警惕结论与证据不相符合、借助遗漏的信息撒谎。</p>
+<p><strong>哪些重要信息被遗漏了？</strong><br>&lt;1&gt; 你遇到的信息几乎都带有某种目的。这些信息是被作者有选择地组织在一起的，组织这些信息的人希望在某种程度上影响你的思维。因此，你的任务就是要决定，你是否愿意成为实现这个目的的工具。<br>&lt;2&gt; 不完整的推理是必然存在的：<br>&ensp;1）时间和空间所造成的局限性。<br>&ensp;2）多数人的注意范围是非常有限的；冗长的信息会使我们觉得厌烦。<br>&ensp;3）提出论证的人所具备的知识往往是不完整的。<br>&ensp;4）纯粹为了欺骗。<br>&ensp;5）每个人视角不同。</p>
+<p><strong>什么结论可能是合理的？</strong><br>&lt;1&gt; 警惕二元思维（对与错、非黑即白）。<br>&lt;2&gt; 产生多个解决方法会极大提高我们思维的灵活性。<br>&lt;3&gt; 通过鉴别几个合理的结论，你可以确定是否有一个你认可的结论。如果可能的话，尝试自己替换作者给出的结论。这是决定你接受还是反对作者结论的最后一步。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2019/09/09/rn-looking-out-looking-in/" data-toggle="tooltip" data-placement="top" title="《沟通的艺术》——科学全面地研究沟通的工具书">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

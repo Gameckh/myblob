@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          MutationObserver实现自定义公式提示信息 - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2020/12/28/spjs-custom-formula-messages/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                    <h1>MutationObserver实现自定义公式提示信息</h1>
+                    <h2 class="subheading">———— MutationObserver非主流应用场景</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2020-12-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>上周接到一个重要客户的个性化定制需求，要重写SpreadJS的公式提示信息面板。这个可以理解，打造自己的产品嘛，总是希望能加一些个性化的设计。</p>
+</blockquote>
+<p><strong>需求背景描述：</strong><br>上周接到一个重要客户的个性化定制需求，要重写SpreadJS的公式提示信息面板。客户是做在线协同文档产品的（对协同的话题感兴趣的话可以查看“协同文档”标签下的文章）。这个可以理解，打造自己的产品嘛，总是希望能加一些个性化的设计。但麻烦点在于，<strong>SpreadJS没有提供对应的public接口</strong>，所以通常会给客户建议直接购买SpreadJS的源代码，这样大家都愉快。<br>购买源码涉及到采购立项、商务谈判（搞不好还要招投标）、合同审核、付款等流程，这一套下来对方产品团队估计就疯了。这边经过讨论（尤其是要征得销售同学的同意，你猜猜为什么;) ），仅就此功能给客户出一个临时解决方案。<br>以上为背景。</p>
+<p><strong>需求/功能描述：</strong><br><img src="001.png"><br><img src="002.png"><br>如上图所示，以上两个提示信息是SpreadJS原生实现的，体验上类似Excel的Formula Helper的tip，客户就想自己做一个个性化的tip替换掉原生效果。<br>那么要实现自定制Formula Helper Tips，到底要实现什么？这里建议有此想法的小伙伴，可以先打开一个SpreadJS，输入公式后仔细查看Tips的UI逻辑。我总结了几点，如下所示：<br>1、能够在光标处根据当前输入内容，自动模糊检索可能的公式条目；<br>2、当输入公式参数时，会自动判断参数输入的是公式，还是值（或引用），如果是公式，回到1，如果是值（或引用），弹出参数提示以及公式详情；<br>3、当遇到多层嵌套公式时，Helper Tip会随鼠标点击（光标停留）的位置判断所在位置的公式，并结合1、2的逻辑给出对应的提示信息。<br>以上3点，是基于UI层面的逻辑拆解，看起来不复杂，但进一步拆解为技术点时会发现，里面有很多难点，比如：<br>1、怎么获得输入框的光标位置？<br>2、当光标更改时，如何拆解出对应的公式，并修改Tip的内容给出对应的提示？<br>3、怎么判断输入、点击、光标变更的事件，如何在合适的时机弹出Helper Tips？<br>这几个问题都是大坑，我会把这个话题分三个部分，把这些问题一一处理掉。</p>
+<p><strong>第一步：解决问题3 —— 如何在合适的时机弹出Helper Tips?</strong><br>这个问题，如果正面强攻，会非常麻烦，不过好在我们只需要“重写”SpreadJS现有的内容，而不需要自己再造一套轮子。因此我们可以通过MutationObserver监听SpreadJS的弹窗，再修改原有的内容为自定义内容即可。<br><strong>注：MutationObserver监听是异步的，但它是微任务，优先级高于Dom渲染，不用担心会出现原界面“闪现”的问题。</strong><br>代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听host更改，修改func helps内容（依赖SpreadJS自己的逻辑）</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">observeChange</span>(<span class="params">formulaHelper</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">const</span> targetNode = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;ss&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> config = &#123; <span class="attr">childList</span>: <span class="literal">true</span> &#125;;</span><br><span class="line">  <span class="keyword">const</span> callback = <span class="function"><span class="keyword">function</span>(<span class="params">mutationsList, observer</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> mutation <span class="keyword">of</span> mutationsList) &#123;</span><br><span class="line">      <span class="keyword">if</span> (mutation.type === <span class="string">&#x27;childList&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(mutation.addedNodes &amp;&amp; mutation.addedNodes.length &gt; <span class="number">0</span>)&#123;</span><br><span class="line">          <span class="keyword">let</span> addedNodes = mutation.addedNodes;</span><br><span class="line">          <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;addedNodes.length; i++)&#123;</span><br><span class="line">            <span class="keyword">let</span> node = addedNodes[i];</span><br><span class="line">            <span class="comment">// gcsj-func-help-popup 是参数提醒</span></span><br><span class="line">            <span class="comment">// gcsj-func-ac-popup 是函数提醒</span></span><br><span class="line">            <span class="keyword">if</span>(node.classList[<span class="number">0</span>] === <span class="string">&quot;gcsj-func-help-popup&quot;</span> || node.classList[<span class="number">0</span>] === <span class="string">&quot;gcsj-func-ac-popup&quot;</span> )&#123;</span><br><span class="line">              <span class="keyword">const</span> nodeObserver = <span class="keyword">new</span> MutationObserver(<span class="function">(<span class="params">mutationsList, observer</span>) =&gt;</span> &#123;</span><br><span class="line">                mutationsList.forEach(<span class="function">(<span class="params">mutationRecord</span>) =&gt;</span> &#123;</span><br><span class="line">                  nodeObserver.disconnect();</span><br><span class="line">                  <span class="comment">// console.log(node);</span></span><br><span class="line">                  mutationRecord.target.innerText = formulaHelper.showForCasual(node);</span><br><span class="line">                  nodeObserver.observe(node, &#123;<span class="attr">attributes</span>: <span class="literal">true</span>, <span class="attr">childList</span>: <span class="literal">true</span>&#125;);</span><br><span class="line">                &#125;);</span><br><span class="line">              &#125;);</span><br><span class="line">              nodeObserver.observe(node, &#123;<span class="attr">attributes</span>: <span class="literal">true</span>, <span class="attr">childList</span>: <span class="literal">true</span>&#125;)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">const</span> observer = <span class="keyword">new</span> MutationObserver(callback);</span><br><span class="line">  observer.observe(targetNode, config);</span><br><span class="line">  <span class="keyword">return</span> observer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步：解决问题1 —— 如何获取光标位置？</strong><br>可能有同学之前在网上搜索过这个问题，但题主确实是没有找到原生的JS事件能够直接监听光标位置的改变。所以这里采用了一些特殊的办法：通过获取“选中区域”的方式，获取到光标所在位置，如果选中区域为0，光标位置就是 selection 的 start == end的位置。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    获取光标焦点位置</span></span><br><span class="line"><span class="comment">    入参：光标HostElement</span></span><br><span class="line"><span class="comment">    返回：光标所在位置（int）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="function"><span class="title">getCursortPosition</span>(<span class="params">element</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> caretOffset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> doc = element.ownerDocument || element.document;</span><br><span class="line">    <span class="keyword">var</span> win = doc.defaultView || doc.parentWindow;</span><br><span class="line">    <span class="keyword">var</span> sel;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> win.getSelection != <span class="string">&quot;undefined&quot;</span>) &#123;<span class="comment">//谷歌、火狐</span></span><br><span class="line">    sel = win.getSelection();</span><br><span class="line">    <span class="keyword">if</span> (sel.rangeCount &gt; <span class="number">0</span>) &#123;<span class="comment">//选中的区域</span></span><br><span class="line">        <span class="keyword">var</span> range = win.getSelection().getRangeAt(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">var</span> preCaretRange = range.cloneRange();<span class="comment">//克隆一个选中区域</span></span><br><span class="line">        preCaretRange.selectNodeContents(element);<span class="comment">//设置选中区域的节点内容为当前节点</span></span><br><span class="line">        preCaretRange.setEnd(range.endContainer, range.endOffset);  <span class="comment">//重置选中区域的结束位置</span></span><br><span class="line">        caretOffset = preCaretRange.toString().length;</span><br><span class="line">    &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((sel = doc.selection) &amp;&amp; sel.type != <span class="string">&quot;Control&quot;</span>) &#123;<span class="comment">//IE</span></span><br><span class="line">        <span class="keyword">var</span> textRange = sel.createRange();</span><br><span class="line">        <span class="keyword">var</span> preCaretTextRange = doc.body.createTextRange();</span><br><span class="line">        preCaretTextRange.moveToElementText(element);</span><br><span class="line">        preCaretTextRange.setEndPoint(<span class="string">&quot;EndToEnd&quot;</span>, textRange);</span><br><span class="line">        caretOffset = preCaretTextRange.text.length;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> caretOffset;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么有了上述的方法，我们已经可以获取到输入框的光标位置了，但是在什么时机获取呢？结合Part I 中的分析，当以下两种情况出现时，我们需要更新光标位置：<br>1、输入框内容发生改变时；<br>2、鼠标点击对应位置时；<br>3、键盘的 上、下、左、右方向键被触发时。</p>
+<p>本Demo实现其中两个（键盘事件参考鼠标事件自行绑定）<br>代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 鼠标点击获取焦点事件</span></span><br><span class="line">sheet.bind(GC.Spread.Sheets.Events.EditStarting, <span class="function">(<span class="params">sender, args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> editHost = CustomizeFormulaHelper.getInputDom(args.sheet);</span><br><span class="line">    <span class="keyword">if</span>(editHost)&#123;</span><br><span class="line">        editHost.addEventListener(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">            myFormulaHelper.currentCursortPosition = CustomizeFormulaHelper.getCursortPosition(editHost);</span><br><span class="line">            <span class="comment">// console.log(editHost.textContent);</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 内容变更获取焦点事件</span></span><br><span class="line">sheet.bind(GC.Spread.Sheets.Events.EditChange, <span class="function">(<span class="params">sender, args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> editHost = CustomizeFormulaHelper.getInputDom(args.sheet);</span><br><span class="line">    <span class="keyword">if</span>(editHost)&#123;</span><br><span class="line">        myFormulaHelper.currentCursortPosition = CustomizeFormulaHelper.getCursortPosition(editHost);</span><br><span class="line">        <span class="comment">// console.log(editHost.textContent);</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 复位光标位置</span></span><br><span class="line">sheet.bind(GC.Spread.Sheets.Events.EditEnded, <span class="function">(<span class="params">sender, args</span>) =&gt;</span> &#123;</span><br><span class="line">    myFormulaHelper = <span class="keyword">new</span> CustomizeFormulaHelper(args.sheet, fbx);</span><br><span class="line">    observer.disconnect();</span><br><span class="line">    observer = observeChange(myFormulaHelper);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>第三步：解决问题2 —— 如何解析公式（尤其是多层嵌套公式），并给出具体的提示信息？</strong><br>通过前两篇的铺垫，我们打通了光标事件、展示时机两大难点。本篇来解决最麻烦的解析公式问题。<br>我在第一篇中提到，公式提示信息分两种：<br>1、公式补全，也就是当用户输入不完整公式时，提示信息应当是一个列表，我们在列表中会罗列出系统中支持的所有公式的模糊检索结果以及公式的描述信息。<br>2、公式参数提醒，当用户输入了完整的公式后，进入参数填写时，我们要提示客户参数的个数和形式。<br>针对最复杂的解析公式问题，好在SpreadJS的FormulaTextBox暴露了一个parseInternal方法可供我们调用，调用方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fbx.parseInternal(fbx.text(), sheet, sheet.getActiveRowIndex(), sheet.getActiveColumnIndex())</span><br></pre></td></tr></table></figure>
+<p>这就是为何我们要在Demo中绑定一个隐藏的FormulaTextBox供我们使用的原因。</p>
+<p>另外，针对公式和描述信息、以及参数信息，我们可以调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GC.Spread.CalcEngine.Functions.findGlobalFunctions();</span><br></pre></td></tr></table></figure>
+<p>来获取全局公式的定义，并通过</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func.description()</span><br></pre></td></tr></table></figure>
+<p>获取到每个function的描述信息（包括了参数信息）<br>综上，我们已经打通了所有需要依赖的接口，剩下的就是纯JS编码了，具体参考附件Demo的实现吧。</p>
+<p><strong>完整Demo参考：</strong><br><a href="custome_formula_helper.zip">custome_formula_helper.zip</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/02/02/spjs-collaboration-system-architecture/" data-toggle="tooltip" data-placement="top" title="协同文档实现的流程、架构图以及相关解释">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/23/spjs-HTML-in-cells/" data-toggle="tooltip" data-placement="top" title="Canvas单元格内渲染HTML，并支持导出PDF和打印的实现方法">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

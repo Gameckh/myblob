@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Canvas单元格内渲染HTML，并支持导出PDF和打印的实现方法 - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2020/11/23/spjs-HTML-in-cells/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                    <h1>Canvas单元格内渲染HTML，并支持导出PDF和打印的实现方法</h1>
+                    <h2 class="subheading">HTML in Canvas Cells</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2020-11-23
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>HTML是Web页面中所有元素的载体，作为前端技术人员最为熟悉、也最基础的功能，如果能跟采用了Canvas技术的SpreadJS结合使用，那这种体验一定非常美妙，简直是开启了一个为所欲为的新世界。</p>
+</blockquote>
+<p>之前的Demo中采用了在自定义单元格的paint方法中生成图片，然后调用SpreadJS原生的canvas渲染图片的方式来实现在单元格中显示image，效果如图：<br><a target="_blank" rel="noopener" href="https://demo.grapecity.com.cn/SpreadJS/cdn/extendedExample/#/demos/htmlCell">原示例链接点我查看</a><br><img src="001.png"><br>（图中html代码片段可以通过设置allowCellOverflow = false 来关闭显示）</p>
+<p>这个示例的确能解决HTML渲染的问题，但是如果需要打印或者导出PDF时就没办法把渲染的内容导出来了。先说一个前提，SpreadJS的打印和导出PDF，都是“所见即所得”的，也就是说页面上的可视化元素都可以被导出PDF或输送给打印接口。这是SpreadJS的渲染机制支撑起来的功能。<br>但这里为什么就不灵了呢？</p>
+<p>关键问题出在image的渲染机制上。HTML为保证页面渲染的性能，对image元素的加载都是异步的，而输出结果时SpreadJS会调用相关区域的paint方法，对这一区域执行重绘（这是canvas的机制）。而在重绘期间，image还在等待，这样就会导致输出的结果中看不到image。</p>
+<p>那么我们干脆这样改进一下思路：<br>1、得到HTML片段后，在合适的时间（只要在需要显示到单元格之前）将它转为图片，并完成加载。<br>2、在图片加载完成的回调中，给单元格设置背景图。<br>3、通过自定义单元格，让单元格中的value（这里是html片段）不要显示出来。</p>
+<p>这里利用了SpreadJS会缓存单元格背景图的机制，让我们的图片在导出时不再丢失。</p>
+<p>关键代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_html2img</span>(<span class="params">value, style, cell</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 利用svg来实现脱离DOM渲染img</span></span><br><span class="line">    <span class="keyword">var</span> svgPattern = <span class="string">&#x27;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;&#123;0&#125;&quot; height=&quot;&#123;1&#125;&quot;&gt;&#x27;</span> +</span><br><span class="line">            <span class="string">&#x27;&lt;foreignObject width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot; style=&quot;font:&#123;2&#125;&quot;&gt;&#123;3&#125;&lt;/div&gt;&lt;/foreignObject&gt;&lt;/svg&gt;&#x27;</span>;</span><br><span class="line">    <span class="comment">// 获取单元格的宽度</span></span><br><span class="line">    <span class="keyword">var</span> w = cell.sheet.getCellRect(cell.row, cell.col).width;</span><br><span class="line">    <span class="comment">// 获取单元格的高度</span></span><br><span class="line">    <span class="keyword">var</span> h = cell.sheet.getCellRect(cell.row, cell.col).height;</span><br><span class="line">    <span class="comment">// 根据宽高，设置svg渲染参数</span></span><br><span class="line">    <span class="keyword">var</span> data = svgPattern.replace(<span class="string">&quot;&#123;0&#125;&quot;</span>, w).replace(<span class="string">&quot;&#123;1&#125;&quot;</span>, h).replace(<span class="string">&quot;&#123;2&#125;&quot;</span>, style.font).replace(<span class="string">&quot;&#123;3&#125;&quot;</span>, value);</span><br><span class="line">    <span class="comment">// 这里需要采用这种方式确保img能够在不可见的情况下正常渲染出来</span></span><br><span class="line">    <span class="keyword">var</span> doc = <span class="built_in">document</span>.implementation.createHTMLDocument(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    doc.write(data);</span><br><span class="line">    <span class="comment">// Get well-formed markup</span></span><br><span class="line">    data = (<span class="keyword">new</span> XMLSerializer()).serializeToString(doc.body.children[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    img = <span class="keyword">new</span> Image();</span><br><span class="line">    img.src = <span class="string">&#x27;data:image/svg+xml;base64,&#x27;</span>+<span class="built_in">window</span>.btoa(<span class="built_in">unescape</span>(<span class="built_in">encodeURIComponent</span>(data))); <span class="comment">// 涉及中文时的转码</span></span><br><span class="line">    <span class="comment">// 把img对象放到cell的标签里（就是找个地方暂存一下，后边会用到）</span></span><br><span class="line">    cell.tag(img);</span><br><span class="line">    img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 设置单元格类型</span></span><br><span class="line">        cell.cellType(<span class="keyword">new</span> RenderHTMLTagCellType());</span><br><span class="line">        cell.value(value);</span><br><span class="line">        cell.backgroundImageLayout(GC.Spread.Sheets.ImageLayout.center);</span><br><span class="line">        cell.backgroundImage(img.src);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>经过之前的分析铺垫，我们可知问题就出在img渲染是异步的问题上。以上这段代码会涉及到SpreadJS的逻辑，但主要还是集中在解决img渲染的问题上。具体逻辑可以参照注释。</p>
+<p>完整的示例下载：<a href="demo.zip">demo.zip</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/12/28/spjs-custom-formula-messages/" data-toggle="tooltip" data-placement="top" title="MutationObserver实现自定义公式提示信息">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/10/10/rn-Nonviolent-Communication/" data-toggle="tooltip" data-placement="top" title="非暴力沟通 读书笔记">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

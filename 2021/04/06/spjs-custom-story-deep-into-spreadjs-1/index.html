@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【客户故事】从需求到深入SpreadJS（一） - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2021/04/06/spjs-custom-story-deep-into-spreadjs-1/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg-deep-into-spreadjs.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                    <h1>【客户故事】从需求到深入SpreadJS（一）</h1>
+                    <h2 class="subheading">某电商服务平台的Excel线上化故事</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2021-04-06
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>本文分三篇，描述了一个真实的客户故事，记录了从需求、场景，到选型，再到SpreadJS的应用和原理简析。</p>
+</blockquote>
+<p><strong>需求场景：</strong></p>
+<p>我们公司主营业务是互联网电商服务业方面，平时会处理大量商业和用户信息，有庞大的客服团队（共约5千人左右），当时公司已有的系统，主要面向的用户就是我们的客服人员。</p>
+<p>客服平时每天都会处理大量的工单填报、客诉登记、第三方平台原始数据的导入、统计汇总、审核审批、电签、分发等工作。平时大部分工作信息的载体都是Excel，每天服务器需要处理海量的文档，由于Excel文档本身数据难以提取入库，模板更新时也不方便第一时间分发到操作员处，难以整合到Web页面里等问题，我们的产品组接到了升级系统的提案。</p>
+<p>要评估这个需求并不容易，当时大家讨论总结了以下几个需求点：</p>
+<p><strong>1.   并发：</strong></p>
+<p>公司客服人数众多，几千人同时在线重度操作，业务流转周期短、数据量大，所以对服务端并发性能消耗是很大的。原来是在后台用Apache POI来提取和修改Excel数据、并执行其中的公式计算等。这样会遇到两个性能瓶颈：</p>
+<p>&lt;1&gt; 需要频繁地上传、下载文档，服务器带宽承受了很大的压力；<br>&lt;2&gt; 所有Excel解析、提取的操作都在服务器端，频繁的IO操作让服务器不堪重负。</p>
+<p>以上两个性能点，在目前的架构下很难突破，这也是重构项目时最具挑战性的需求点之一。当然硬堆服务器配置也是一个解决方案，但无法解决其它的一些问题，并且也会带来运维的压力。</p>
+<p><strong>2.   对Excel操作和兼容性要求较高</strong></p>
+<p>新系统如果不能让大家快速上手使用，以这个项目用户的体量，培训成本将无法承受。而且要能够直接导入已有的Excel报表模板，否则再次开发或设计所有Excel报表也是难以接受的。</p>
+<p><strong>3.   报表格式灵活多变</strong></p>
+<p>当需要创建新的报表模板时，不需要研发的介入，操作员的设计和填报都可以在页面上完成。</p>
+<p><strong>4.   支持公式计算</strong></p>
+<p>由于涉及到商品、订单、成本核算、财务统计等模块，对计算公式的种类和性能要求较高。</p>
+<p><strong>5.   工作流中的数据文档</strong></p>
+<p>以前系统的工作流，涉及到Excel报表时，要么数据会先在服务端和Excel模板进行拼装，要么系统根据路径找到文件服务器的Excel文件，然后流转到对应环节。一些新的业务模块，甚至还只能用邮件进行文件传输。</p>
+<p>这个过程会产生大量的文件，对文件服务器的带来了很大压力，后台也不得不定期做批量的数据拆分和维护。这次升级系统需要解决这个问题。</p>
+<p><strong>选型经历：</strong></p>
+<p>首先，选型的第一步就是搞清楚我们到底需要什么样的产品，实际上关于控件的概念，曾对我造成过很大的困扰。那么什么是控件？为什么要用控件？</p>
+<p><img src="001.png"></p>
+<p>其实控件就是只提供了基本功能，支持二次开发的功能模块。我们有自己的开发团队，并且当前的需求是对现有系统部分模块的升级，而不是买来一个新的系统彻底替换掉它。控件相对依赖更轻，可塑性更好，并且也有对应的开发文档和API，是面向开发者的基础功能包，便于按需求来定制功能。</p>
+<p>其次，对于目前市面上能集成到系统中，支持这种在线表格文档编辑的产品有不少，大体我把他们分了两类：</p>
+<p><strong>1.   云文档产品的私有化部署</strong></p>
+<p>这种产品有很多，类似WPS、石墨文档、office online等都可以私有化部署。它们本身具备较高的完成度，已经帮用户实现了包括在线协同内的几乎所有功能，甚至也支持一定程度的二次开发。</p>
+<p>但问题在于通常这类产品封闭性比较强，二次定制开发还是相对比较困难，且不够轻量。授权方式也多以按时间、按并发量、用户数量等方式授权，价格昂贵，不是很适合我们的需要。</p>
+<p><strong>2.   控件类</strong></p>
+<p>像LuckySheet、Handsontable、SpreadJS这种就是标准的控件了，它们都是纯前端表格控件，都支持Excel的功能特性和json数据绑定。</p>
+<p>LuckySheet是国内的MIT开源软件，可以拿来商用。但在我调研时它才刚上线1、2个月，并且不像React这种有某个大厂来背书，所以不太可能拿来用到我们的正式项目里。截止目前已经过去了1年，陆续推出了QQ群、论坛等交流平台，但仍显薄弱，一些实用、易用的API相对也比较欠缺。这些缺点对于ToB场景的应用都是无法接受的。</p>
+<p><a target="_blank" rel="noopener" href="https://handsontable.com/">Handsontable</a>是国外的一个商业表格控件，据说二次开发坑较多，但对我们来说最大的问题是它没有中文支持团队，放弃。</p>
+<p><a target="_blank" rel="noopener" href="https://demo.grapecity.com.cn/SpreadJS/WebDesigner/">SpreadJS</a>是葡萄城公司的商业Excel表格控件，有趣的是我发现在V2EX的LuckySheet下方评论区中，LuckySheet的作者也说SpreadJS是行业标杆。它支持导入包括公式、图表、样式、条件格式在内的绝大部分Excel特性（不支持宏）。并且最惊喜的是，它的操作界面是一个完整的Excel界面，完全纯JS开发的，用json进行模板和数据交互。同时SpreadJS也有对应的售后支持团队，技术问题可以工作日期间随时电话、论坛交流，相关的资料包括视频、文档、示例、API手册也都非常丰富，甚至还可以请他们的技术顾问来公司培训。对于像我们这种工期短、开发任务比较繁重的项目组，确实能节约大量的精力，降低了风险。</p>
+<p><img src="002.png"></p>
+<p>图片来源：<a target="_blank" rel="noopener" href="https://demo.grapecity.com.cn/SpreadJS/WebDesigner/">SpreadJS在线Excel编辑器</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/04/07/spjs-custom-story-deep-into-spreadjs-2/" data-toggle="tooltip" data-placement="top" title="【客户故事】从需求到深入SpreadJS（二）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/03/01/spjs-SpreadJS-on-Nodejs-2/" data-toggle="tooltip" data-placement="top" title="专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（二）">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

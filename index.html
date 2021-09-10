@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>KevinChen&#39;s Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Aiming at the Core Value</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2021/06/30/rn-consultative-selling/">
+        <h2 class="post-title">
+            《顾问式销售》读书笔记
+        </h2>
+        <h3 class="post-subtitle">
+            CONSULTATIVE SELLING: THE HANAN FORMULA FOR HIGH-MARGIN SALES AT HIGH LEVELS (EIGHTH EDITION)
+        </h3>
+        <div class="post-content-preview">
+            我认为顾问式销售这本书，针对销售人员，提供了特定并切实可行的成功方法和技巧，以实现更好地赢单。就我个人而言，我意识到如果在对客户需求、挑战或策略一无所知的情况下进行销售，那么实际上在销售产品功能时是无法完整展示这些产品的真正附加价值的。这本书提供了一些对应的技术和技巧来增强销售过程，并使之成为对客户和厂商都以价值为导向的过程。我认为在面对大多数客户都可以适用书中提到的不同风格的类似方法和技术......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-06-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/04/08/spjs-custom-story-deep-into-spreadjs-3/">
+        <h2 class="post-title">
+            【客户故事】从需求到深入SpreadJS（三）
+        </h2>
+        <h3 class="post-subtitle">
+            某电商服务平台的Excel线上化故事
+        </h3>
+        <div class="post-content-preview">
+            深入SpreadJS（续）：
+2.   计算引擎：
+据官方介绍来看，公式引擎其实是包含了两大实现的部分，一个是计算逻辑系统、一个是引用系统。
+&lt;1&gt; 引用系统：
+Excel中公式的计算都是依赖于某些原始数据的，比如C1引用B1、B1又引用A１等等，实际上当我在写这篇文章前，对Excel的引用体系还不甚清楚，主要原因还是因为SpreadJS把这部分功能封装的已经非常原生化了，根本不......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-04-08
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/04/07/spjs-custom-story-deep-into-spreadjs-2/">
+        <h2 class="post-title">
+            【客户故事】从需求到深入SpreadJS（二）
+        </h2>
+        <h3 class="post-subtitle">
+            某电商服务平台的Excel线上化故事
+        </h3>
+        <div class="post-content-preview">
+            SpreadJS需求解决方案和优势：
+当时为了评估是否能够满足我们的需求，约了跟SpreadJS的技术人员的远程会议。当时我们这边一条条提需求，那边就直接演示实现方案，效果非常直观。结合上边说的那些需求，对应的解决方案思路也很清晰：
+1、 并发：
+由于SpreadJS是数据和模板分离的设计，填报人员只需要在页面上完成填报。提交时可以只提交填报好的数据json即可，服务器再也不用吭哧吭哧地分析......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-04-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/04/06/spjs-custom-story-deep-into-spreadjs-1/">
+        <h2 class="post-title">
+            【客户故事】从需求到深入SpreadJS（一）
+        </h2>
+        <h3 class="post-subtitle">
+            某电商服务平台的Excel线上化故事
+        </h3>
+        <div class="post-content-preview">
+            
+本文分三篇，描述了一个真实的客户故事，记录了从需求、场景，到选型，再到SpreadJS的应用和原理简析。
+
+需求场景：
+我们公司主营业务是互联网电商服务业方面，平时会处理大量商业和用户信息，有庞大的客服团队（共约5千人左右），当时公司已有的系统，主要面向的用户就是我们的客服人员。
+客服平时每天都会处理大量的工单填报、客诉登记、第三方平台原始数据的导入、统计汇总、审核审批、电签、分发等工作。......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-04-06
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/03/01/spjs-SpreadJS-on-Nodejs-2/">
+        <h2 class="post-title">
+            专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（二）
+        </h2>
+        <h3 class="post-subtitle">
+            相对于GcExcel的对比及选型思考和总结
+        </h3>
+        <div class="post-content-preview">
+            上一篇介绍了怎样在Nodejs环境中搭建SpreadJS的运行环境，本篇博客是此系列的第二篇，重点在于对比GcExcel for Java和Node.js中运行SpreadJS的性能比较，以及选型建议和总结。由于SpreadJS和GcExcel的功能非常丰富，本文仅选择最为常见的两个功能点做对比，分别是设置区域数据，并导出Excel文档。对 GcExcel 不熟悉的同学，可以先看一下上边链接......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-03-01
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/27/spjs-SpreadJS-on-Nodejs-1/">
+        <h2 class="post-title">
+            专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（一）
+        </h2>
+        <h3 class="post-subtitle">
+            如何在Node.js中运行SpreadJS
+        </h3>
+        <div class="post-content-preview">
+            在我们实际应用中，很可能会遇到这样的需求：海量公式计算、批量绑定数据源并导出Excel、批量修改大量的Excel内容及样式、服务端批量打印以及生成PDF文档等。对于Java和.Net用户，实际上我们已经提供了非常成熟的解决方案：GcExcel。本专题旨在探讨如何在Node.js中实现这些功能。如大家所知，JavaScript是一门能力非常强大的语言，尤其是自2009年Node.js横空出世一......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-02-27
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/02/spjs-collaboration-system-architecture/">
+        <h2 class="post-title">
+            协同文档实现的流程、架构图以及相关解释
+        </h2>
+        <h3 class="post-subtitle">
+            ———— 架构图和注解
+        </h3>
+        <div class="post-content-preview">
+            
+无论从哪个方面看，协同文档都是一个及其复杂的课题。自己毕竟实际参与过协同项目，这么有含金量的课题，不使劲水上一整个系列简直对不起自己（大雾）。本篇只是协同系列的开端，仅仅简单总结了个架构，未来计划会从场景、分类、实现思路、难点分析等方面展开。
+
+背景描述：自从2020年初疫情爆发以来，远程办公的需求急剧扩张，迅速形成了一个小风口。在这之前鲜有人问津的协同文档的实现，也开始频繁见到这样的需求......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2021-02-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2020/12/28/spjs-custom-formula-messages/">
+        <h2 class="post-title">
+            MutationObserver实现自定义公式提示信息
+        </h2>
+        <h3 class="post-subtitle">
+            ———— MutationObserver非主流应用场景
+        </h3>
+        <div class="post-content-preview">
+            
+上周接到一个重要客户的个性化定制需求，要重写SpreadJS的公式提示信息面板。这个可以理解，打造自己的产品嘛，总是希望能加一些个性化的设计。
+
+需求背景描述：上周接到一个重要客户的个性化定制需求，要重写SpreadJS的公式提示信息面板。客户是做在线协同文档产品的（对协同的话题感兴趣的话可以查看“协同文档”标签下的文章）。这个可以理解，打造自己的产品嘛，总是希望能加一些个性化的设计。但麻......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2020-12-28
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2020/11/23/spjs-HTML-in-cells/">
+        <h2 class="post-title">
+            Canvas单元格内渲染HTML，并支持导出PDF和打印的实现方法
+        </h2>
+        <h3 class="post-subtitle">
+            HTML in Canvas Cells
+        </h3>
+        <div class="post-content-preview">
+            
+HTML是Web页面中所有元素的载体，作为前端技术人员最为熟悉、也最基础的功能，如果能跟采用了Canvas技术的SpreadJS结合使用，那这种体验一定非常美妙，简直是开启了一个为所欲为的新世界。
+
+之前的Demo中采用了在自定义单元格的paint方法中生成图片，然后调用SpreadJS原生的canvas渲染图片的方式来实现在单元格中显示image，效果如图：原示例链接点我查看（图中htm......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2020-11-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2020/10/10/rn-Nonviolent-Communication/">
+        <h2 class="post-title">
+            非暴力沟通 读书笔记
+        </h2>
+        <h3 class="post-subtitle">
+            Nonviolent Communication
+        </h3>
+        <div class="post-content-preview">
+            
+“也许我们并不认为自己的谈话方式是“暴力”的，但我们的语言确实常常引发自己和他人的痛苦。”“大多数暴力的根源在于人们忽视彼此的感受与需要，而将冲突归咎于对方。”
+
+非暴力沟通的4要素
+1.    观察-我看到了什么。清楚的表述看到的事情，这个过程不做对他人/自己的评判。2.    感受-我的感受如何。表达因为看到的事情，而导致的感受。3.    需要-我的哪些需要导致了上述感受。清楚的表述......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Kevin on
+        2020-10-10
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    
+        <li class="next">
+            <a href="/page/2/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#读书笔记" title="读书笔记" rel="5">读书笔记</a>
+                            
+                        
+                            
+                            <a href="/tags/#SpreadJS" title="SpreadJS" rel="11">SpreadJS</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Node.js" title="Node.js" rel="2">Node.js</a>
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+
+                        
+                            <p>Senior Technical Consultant</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+
+                            
+
+                            
+
+                            
+                            
+                            
+                            
+                                <li>
+                                    <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

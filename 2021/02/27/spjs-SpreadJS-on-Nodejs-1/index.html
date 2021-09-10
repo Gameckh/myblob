@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（一） - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2021/02/27/spjs-SpreadJS-on-Nodejs-1/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                          <a class="tag" href="/tags/#Node.js" title="Node.js">Node.js</a>
+                        
+                    </div>
+                    <h1>专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（一）</h1>
+                    <h2 class="subheading">如何在Node.js中运行SpreadJS</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2021-02-27
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>在我们实际应用中，很可能会遇到这样的需求：海量公式计算、批量绑定数据源并导出Excel、批量修改大量的Excel内容及样式、服务端批量打印以及生成PDF文档等。对于Java和.Net用户，实际上我们已经提供了非常成熟的解决方案：<a target="_blank" rel="noopener" href="https://www.grapecity.com.cn/developer/grapecitydocuments/excel-java">GcExcel</a>。本专题旨在探讨如何在Node.js中实现这些功能。<br>如大家所知，JavaScript是一门能力非常强大的语言，尤其是自2009年Node.js横空出世一来，JavaScript也已经被用在了更丰富的场景中，Atwood’s Law甚至说过：</p>
+<blockquote>
+<p>Atwood’s Law: Any application that can be written in JavaScript, will eventually be written in JavaScript.<br>任何可以用 JavaScript 来写的应用，最终都将用 JavaScript 来写。</p>
+</blockquote>
+<p>但是，Reg Braithwaite大神也给出了回应：</p>
+<blockquote>
+<p>The strength of JavaScript is that you can do anything. The weakness is that you will.<br>JavaScript 的优点是可以写任何东西，缺点是你真的会用它去写这些东西。</p>
+</blockquote>
+<p>我们的技术团队在跟国内外各行业SpreadJS的用户交流中，发现有很多的用户尝试在用Node.js来实现在服务端运行SpreadJS。接下来咱们就一起探讨一下如何在Node.js中使用SpreadJS，以及它们结合的表现如何。</p>
+<h2 id="第一篇：如何从Node-js应用程序生成Excel电子表格"><a href="#第一篇：如何从Node-js应用程序生成Excel电子表格" class="headerlink" title="第一篇：如何从Node.js应用程序生成Excel电子表格"></a>第一篇：如何从Node.js应用程序生成Excel电子表格</h2><p>Node.js是流行的事件驱动的JavaScript Runtime，通常用于创建网络应用程序。它可以同时处理多个连接，并且不像其他大多数模型那样依赖线程。<br>在本教程中，我们将使用Spread.Sheets收集用户输入的信息，并将其自动导出到Excel文件——全部在你的Node.js应用程序中实现。<br>该项目的示例zip参考附件。</p>
+<p><img src="001.png"></p>
+<h4 id="SpreadJS和Node-js入门"><a href="#SpreadJS和Node-js入门" class="headerlink" title="SpreadJS和Node.js入门"></a>SpreadJS和Node.js入门</h4><p>首先，我们需要安装Node.js以及Mock-Browser，BufferJS和FileReader，如下链接所示：<br><a target="_blank" rel="noopener" href="https://nodejs.org/en/download/package-manager/">Installing Node.js viaPackage Manager</a><br><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/mock-browser">Mock-Browser</a><br><a target="_blank" rel="noopener" href="https://registry.npmjs.org/bufferjs/-/bufferjs-1.0.0.tgz">BufferJS</a><br><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/filereader">FileReader</a><br>我们将使用Visual Studio创建应用程序。打开Visual Studio后，使用JavaScript&gt; Node.js&gt;Blank Node.js控制台应用程序模板创建一个新应用程序。这将自动创建所需的文件并打开“app.js”文件，这是我们将要更改的唯一文件。<br>对于BufferJS库，您需要下载该软件包，然后通过导航到项目文件夹（一旦创建）并运行以下命令，将其手动安装到项目中：<br><code>npm install</code><br>安装完成后，您可能需要打开项目的package.json文件并将其添加到“ dependencies”部分。文件内容应如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="attr">&quot;name&quot;</span>: <span class="string">&quot;spread-sheets-node-jsapp&quot;</span>,</span><br><span class="line"><span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.0&quot;</span>,</span><br><span class="line"><span class="attr">&quot;description&quot;</span>: <span class="string">&quot;SpreadSheetsNodeJSApp&quot;</span>,</span><br><span class="line"><span class="attr">&quot;main&quot;</span>: <span class="string">&quot;app.js&quot;</span>,</span><br><span class="line"><span class="attr">&quot;author&quot;</span>: &#123;</span><br><span class="line">   <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;admin&quot;</span></span><br><span class="line">&#125;,</span><br><span class="line"><span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">   <span class="attr">&quot;FileReader&quot;</span>: <span class="string">&quot;^0.10.2&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;bufferjs&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;mock-browser&quot;</span>: <span class="string">&quot;^0.92.14&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在此示例中，我们将使用Node.js的文件系统模块。我们可以将其加载到：<br><code>var fs = require(&#39;fs&#39;)</code><br>为了将SpreadJS与Node.js结合使用，我们可以加载已安装的Mock-Browser：<br><code>var mockBrowser =require(&#39;mock-browser&#39;).mocks.MockBrowser</code><br>在加载SpreadJS脚本之前，我们需要初始化模拟浏览器。初始化我们稍后在应用程序中可能需要使用的变量，尤其是“ window”变量：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">global</span>.window =mockBrowser.createWindow()</span><br><span class="line"><span class="built_in">global</span>.document = <span class="built_in">window</span>.document</span><br><span class="line"><span class="built_in">global</span>.navigator = <span class="built_in">window</span>.navigator</span><br><span class="line"><span class="built_in">global</span>.HTMLCollection =<span class="built_in">window</span>.HTMLCollection</span><br><span class="line"><span class="built_in">global</span>.getComputedStyle =<span class="built_in">window</span>.getComputedStyle</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用SpreadJS-npm包"><a href="#使用SpreadJS-npm包" class="headerlink" title="使用SpreadJS npm包"></a>使用SpreadJS npm包</h4><p>SpreadJS Sheets和ExcelIO包需要被添加到项目中。您可以通过右键单击解决方案资源管理器的“ npm”部分并将它们添加到您的项目中，然后选择“安装新的NPM软件包”。您应该能够搜索“ GrapeCity”并安装以下2个软件包：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@grapecity/spread-sheets</span><br><span class="line">@grapectiy/spread-excelio</span><br></pre></td></tr></table></figure>
+
+<p>将SpreadJS npm软件包添加到项目后，正确的依赖关系将被写入package.json：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="attr">&quot;name&quot;</span>: <span class="string">&quot;spread-sheets-node-jsapp&quot;</span>,</span><br><span class="line"><span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.0&quot;</span>,</span><br><span class="line"><span class="attr">&quot;description&quot;</span>: <span class="string">&quot;SpreadSheetsNodeJSApp&quot;</span>,</span><br><span class="line"><span class="attr">&quot;main&quot;</span>: <span class="string">&quot;app.js&quot;</span>,</span><br><span class="line"><span class="attr">&quot;author&quot;</span>: &#123;</span><br><span class="line">   <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;admin&quot;</span></span><br><span class="line">&#125;,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>:&#123;</span><br><span class="line">   <span class="attr">&quot;@grapecity/spread-excelio&quot;</span>: <span class="string">&quot;^11.2.1&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;@grapecity/spread-sheets&quot;</span>: <span class="string">&quot;^11.2.1&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;FileReader&quot;</span>: <span class="string">&quot;^0.10.2&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;bufferjs&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;mock-browser&quot;</span>: <span class="string">&quot;^0.92.14&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在我们需要在app.js文件中引入它：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> GC =<span class="built_in">require</span>(<span class="string">&#x27;@grapecity/spread-sheets&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> GCExcel =<span class="built_in">require</span>(<span class="string">&#x27;@grapecity/spread-excelio&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>使用npm软件包时，还需要设置许可证密钥(官网可以申请到localhost的试用授权，任何对应版本的正式授权都可以)：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GC.Spread.Sheets.LicenseKey =<span class="string">&quot;&lt;YOUR KEY HERE&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个特定的应用程序中，我们将向用户显示他们正在使用哪个版本的SpreadJS。为此，我们可以引入package.json文件，然后引用依赖项以获取版本号：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> packageJson =<span class="built_in">require</span>(<span class="string">&#x27;./package.json&#x27;</span>)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;\n** Using Spreadjs Version&quot;&#x27;</span> + packageJson.dependencies[<span class="string">&quot;@grapecity/spread-sheets&quot;</span>] +<span class="string">&#x27;&quot; **&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="将Excel文件加载到您的Node-js应用程序中"><a href="#将Excel文件加载到您的Node-js应用程序中" class="headerlink" title="将Excel文件加载到您的Node.js应用程序中"></a>将Excel文件加载到您的Node.js应用程序中</h4><p>我们将加载现成的Excel模板文件，用来从用户那里获取数据。接下来，将数据放入文件中并导出。在这种情况下，文件是用户可以编辑的**。<br>首先初始化工作簿和ExcelIO变量：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> wb = <span class="keyword">new</span> GC.Spread.Sheets.Workbook();</span><br><span class="line"><span class="keyword">var</span> excelIO = <span class="keyword">new</span> GCExcel.IO();</span><br></pre></td></tr></table></figure>
+
+<p>让我们在读取文件时将代码包装在try / catch块中。然后，我们可以初始化变量“ readline”——本质上是一个库，可让您读取用户输入到控制台的数据。接下来，我们将存储到一个JavaScript数组中，可用来轻松填写Excel文件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Instantiate the spreadsheet and modifyit</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;\nManipulatingSpreadsheet\n---&#x27;</span>);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">   <span class="keyword">var</span> file = fs.readFileSync(<span class="string">&#x27;./content/billingInvoiceTemplate.xlsx&#x27;</span>);</span><br><span class="line">   excelIO.open(file.buffer, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">       wb.fromJSON(data);</span><br><span class="line">       <span class="keyword">const</span> readline = <span class="built_in">require</span>(<span class="string">&#x27;readline&#x27;</span>);</span><br><span class="line">       <span class="keyword">var</span> invoice = &#123;</span><br><span class="line">            <span class="attr">generalInfo</span>: [],</span><br><span class="line">            <span class="attr">invoiceItems</span>: [],</span><br><span class="line">            <span class="attr">companyDetails</span>: []</span><br><span class="line">       &#125;;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">   <span class="built_in">console</span>.error(<span class="string">&quot;** Error manipulating spreadsheet **&quot;</span>);</span><br><span class="line">   <span class="built_in">console</span>.error(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="收集用户输入"><a href="#收集用户输入" class="headerlink" title="收集用户输入"></a>收集用户输入</h4><p><img src="002.png"></p>
+<p>上图显示了我们正在使用的Excel文件。我们要收集的第一个信息是一般**信息。我们可以在excelio.open调用中创建一个单独的函数，以在控制台中提示用户需要的每一项。我们可以创建一个单独的数组，将数据保存到每个输入之后，然后在我们拥有该节的所有输入之后。将其推送到我们创建的invoice.generalInfo数组中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">fillGeneralInformation();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillGeneralInformation</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">&quot;-----------------------\nFill in InvoiceDetails\n-----------------------&quot;</span>)</span><br><span class="line">   <span class="keyword">const</span> rl = readline.createInterface(&#123;</span><br><span class="line">       <span class="attr">input</span>: process.stdin,</span><br><span class="line">       <span class="attr">output</span>: process.stdout</span><br><span class="line">   &#125;);</span><br><span class="line">   <span class="keyword">var</span> generalInfoArray = [];</span><br><span class="line">   rl.question(<span class="string">&#x27;Invoice Number: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">       generalInfoArray.push(answer);</span><br><span class="line">       rl.question(<span class="string">&#x27;Invoice Date (dd Month Year): &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">           generalInfoArray.push(answer);</span><br><span class="line">            rl.question(<span class="string">&#x27;Payment Due Date (ddMonth Year): &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                generalInfoArray.push(answer);</span><br><span class="line">                rl.question(<span class="string">&#x27;Customer Name: &#x27;</span>,<span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                   generalInfoArray.push(answer);</span><br><span class="line">                    rl.question(<span class="string">&#x27;CustomerCompany Name: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                       generalInfoArray.push(answer);</span><br><span class="line">                        rl.question(<span class="string">&#x27;Customer Street Address:&#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                           generalInfoArray.push(answer);</span><br><span class="line">                           rl.question(<span class="string">&#x27;Customer City, State, Zip (&lt;City&gt;, &lt;State Abbr&gt;&lt;Zip&gt;): &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                generalInfoArray.push(answer);</span><br><span class="line">                               rl.question(<span class="string">&#x27;Invoice Company Name: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                   generalInfoArray.push(answer);</span><br><span class="line">                                   rl.question(<span class="string">&#x27;Invoice Street Address: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                       generalInfoArray.push(answer);</span><br><span class="line">                                       rl.question(<span class="string">&#x27;Invoice City, State, Zip (&lt;City&gt;, &lt;State Abbr&gt;&lt;Zip&gt;): &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                            generalInfoArray.push(answer);</span><br><span class="line">                                           rl.close();</span><br><span class="line">                                           invoice.generalInfo.push(&#123;</span><br><span class="line">                                               <span class="string">&quot;invoiceNumber&quot;</span>: generalInfoArray[<span class="number">0</span>],</span><br><span class="line">                                               <span class="string">&quot;invoiceDate&quot;</span>: generalInfoArray[<span class="number">1</span>],</span><br><span class="line">                                               <span class="string">&quot;paymentDueDate&quot;</span>: generalInfoArray[<span class="number">2</span>],</span><br><span class="line">                                               <span class="string">&quot;customerName&quot;</span>: generalInfoArray[<span class="number">3</span>],</span><br><span class="line">                                               <span class="string">&quot;customerCompanyName&quot;</span>: generalInfoArray[<span class="number">4</span>],</span><br><span class="line">                                               <span class="string">&quot;customerStreetAddress&quot;</span>: generalInfoArray[<span class="number">5</span>],</span><br><span class="line">                                               <span class="string">&quot;customerCityStateZip&quot;</span>: generalInfoArray[<span class="number">6</span>],</span><br><span class="line">                                               <span class="string">&quot;invoiceCompanyName&quot;</span>: generalInfoArray[<span class="number">7</span>],</span><br><span class="line">                                               <span class="string">&quot;invoiceStreetAddress&quot;</span>: generalInfoArray[<span class="number">8</span>],</span><br><span class="line">                                               <span class="string">&quot;invoiceCityStateZip&quot;</span>: generalInfoArray[<span class="number">9</span>],</span><br><span class="line">                                            &#125;);</span><br><span class="line">                                           <span class="built_in">console</span>.log(<span class="string">&quot;General Invoice Information Stored&quot;</span>);</span><br><span class="line">                                           fillCompanyDetails();</span><br><span class="line">                                        &#125;);</span><br><span class="line">                                    &#125;);</span><br><span class="line">                               &#125;);</span><br><span class="line">                            &#125;);</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在该函数中，我们称为“ fillCompanyDetails”，我们将收集有关公司的信息以填充到工作簿的第二张表中。该功能将与以前的功能非常相似：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillCompanyDetails</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">&quot;-----------------------\nFill in CompanyDetails\n-----------------------&quot;</span>)</span><br><span class="line">   <span class="keyword">const</span> rl = readline.createInterface(&#123;</span><br><span class="line">       <span class="attr">input</span>: process.stdin,</span><br><span class="line">       <span class="attr">output</span>: process.stdout</span><br><span class="line">   &#125;);</span><br><span class="line">   <span class="keyword">var</span> companyDetailsArray = []</span><br><span class="line">   rl.question(<span class="string">&#x27;Your Name: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">       companyDetailsArray.push(answer);</span><br><span class="line">       rl.question(<span class="string">&#x27;Company Name: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">            companyDetailsArray.push(answer);</span><br><span class="line">            rl.question(<span class="string">&#x27;Address Line 1: &#x27;</span>,<span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">               companyDetailsArray.push(answer);</span><br><span class="line">                rl.question(<span class="string">&#x27;Address Line 2: &#x27;</span>,<span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                   companyDetailsArray.push(answer);</span><br><span class="line">                    rl.question(<span class="string">&#x27;Address Line3: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                       companyDetailsArray.push(answer);</span><br><span class="line">                        rl.question(<span class="string">&#x27;AddressLine 4: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                           companyDetailsArray.push(answer);</span><br><span class="line">                           rl.question(<span class="string">&#x27;Address Line 5: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                               companyDetailsArray.push(answer);</span><br><span class="line">                               rl.question(<span class="string">&#x27;Phone: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                   companyDetailsArray.push(answer);</span><br><span class="line">                                   rl.question(<span class="string">&#x27;Facsimile: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                       companyDetailsArray.push(answer);</span><br><span class="line">                                        rl.question(<span class="string">&#x27;Website: &#x27;</span>, <span class="function">(<span class="params">answer</span>)=&gt;</span> &#123;</span><br><span class="line">                                           companyDetailsArray.push(answer);</span><br><span class="line">                                           rl.question(<span class="string">&#x27;Email: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                companyDetailsArray.push(answer);</span><br><span class="line">                                               rl.question(<span class="string">&#x27;Currency Abbreviation: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                   companyDetailsArray.push(answer);</span><br><span class="line">                                                    rl.question(<span class="string">&#x27;Beneficiary: &#x27;</span>,<span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                       companyDetailsArray.push(answer);</span><br><span class="line">                                                       rl.question(<span class="string">&#x27;Bank: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                            companyDetailsArray.push(answer);</span><br><span class="line">                                                           rl.question(<span class="string">&#x27;Bank Address: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                               companyDetailsArray.push(answer);</span><br><span class="line">                                                               rl.question(<span class="string">&#x27;Account Number: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                                   companyDetailsArray.push(answer);</span><br><span class="line">                                                                    rl.question(<span class="string">&#x27;RoutingNumber: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                                       companyDetailsArray.push(answer);</span><br><span class="line">                                                                       rl.question(<span class="string">&#x27;Make Checks Payable To: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                                                                           companyDetailsArray.push(answer);</span><br><span class="line">                                                                            rl.close();</span><br><span class="line">                                                                           invoice.companyDetails.push(&#123;</span><br><span class="line">                                                                               <span class="string">&quot;yourName&quot;</span>: companyDetailsArray[<span class="number">0</span>],</span><br><span class="line">                                                                               <span class="string">&quot;companyName&quot;</span>: companyDetailsArray[<span class="number">1</span>],</span><br><span class="line">                                                                               <span class="string">&quot;addressLine1&quot;</span>: companyDetailsArray[<span class="number">2</span>],</span><br><span class="line">                                                                               <span class="string">&quot;addressLine2&quot;</span>: companyDetailsArray[<span class="number">3</span>],</span><br><span class="line">                                                                               <span class="string">&quot;addressLine3&quot;</span>: companyDetailsArray[<span class="number">4</span>],</span><br><span class="line">                                                                               <span class="string">&quot;addressLine4&quot;</span>: companyDetailsArray[<span class="number">5</span>],</span><br><span class="line">                                                                               <span class="string">&quot;addressLine5&quot;</span>: companyDetailsArray[<span class="number">6</span>],</span><br><span class="line">                                                                                <span class="string">&quot;phone&quot;</span>:companyDetailsArray[<span class="number">7</span>],</span><br><span class="line">                                                                               <span class="string">&quot;facsimile&quot;</span>: companyDetailsArray[<span class="number">8</span>],</span><br><span class="line">                                                                                <span class="string">&quot;website&quot;</span>:companyDetailsArray[<span class="number">9</span>],</span><br><span class="line">                                                                               <span class="string">&quot;email&quot;</span>: companyDetailsArray[<span class="number">10</span>],</span><br><span class="line">                                                                               <span class="string">&quot;currencyAbbreviation&quot;</span>:companyDetailsArray[<span class="number">11</span>],</span><br><span class="line">                                                                               <span class="string">&quot;beneficiary&quot;</span>: companyDetailsArray[<span class="number">12</span>],</span><br><span class="line">                                                                               <span class="string">&quot;bank&quot;</span>:companyDetailsArray[<span class="number">13</span>],</span><br><span class="line">                                                                               <span class="string">&quot;bankAddress&quot;</span>: companyDetailsArray[<span class="number">14</span>],</span><br><span class="line">                                                                               <span class="string">&quot;accountNumber&quot;</span>: companyDetailsArray[<span class="number">15</span>],</span><br><span class="line">                                                                               <span class="string">&quot;routingNumber&quot;</span>: companyDetailsArray[<span class="number">16</span>],</span><br><span class="line">                                                                               <span class="string">&quot;payableTo&quot;</span>: companyDetailsArray[<span class="number">17</span>]</span><br><span class="line">                                                                           &#125;);</span><br><span class="line">                                                                           <span class="built_in">console</span>.log(<span class="string">&quot;Invoice Company Information Stored&quot;</span>);</span><br><span class="line">                                                                            <span class="built_in">console</span>.log(<span class="string">&quot;-----------------------\nFillin Invoice Items\n-----------------------&quot;</span>)</span><br><span class="line">                                                                           fillInvoiceItemsInformation();</span><br><span class="line">                                                                        &#125;);</span><br><span class="line">                                                                   &#125;);</span><br><span class="line">                                                               &#125;);</span><br><span class="line">                                                           &#125;);</span><br><span class="line">                                                       &#125;);</span><br><span class="line">                                                   &#125;);</span><br><span class="line">                                               &#125;);</span><br><span class="line">                                            &#125;);</span><br><span class="line">                                        &#125;);</span><br><span class="line">                                    &#125;);</span><br><span class="line">                                &#125;);</span><br><span class="line">                            &#125;);</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="003.png"></p>
+<p>现在我们已经有了录入的基本信息，我们可以集中精力收集单个项目，这将在另一个名为“ fillInvoiceItemsInformation”的函数中进行。在每个项目之前，我们都会询问用户是否要添加一个项目。如果他们继续输入“ y”，那么我们将收集该项目的信息，然后再次询问直到他们键入“ n”：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillInvoiceItemsInformation</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">const</span> rl = readline.createInterface(&#123;</span><br><span class="line">       <span class="attr">input</span>: process.stdin,</span><br><span class="line">       <span class="attr">output</span>: process.stdout</span><br><span class="line">   &#125;);</span><br><span class="line">   <span class="keyword">var</span> invoiceItemArray = [];</span><br><span class="line">   rl.question(<span class="string">&#x27;Add item?(y/n): &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">       <span class="keyword">switch</span> (answer) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;y&quot;</span>:</span><br><span class="line">               <span class="built_in">console</span>.log(<span class="string">&quot;-----------------------\nEnter ItemInformation\n-----------------------&quot;</span>);</span><br><span class="line">                rl.question(<span class="string">&#x27;Quantity: &#x27;</span>,<span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                   invoiceItemArray.push(answer);</span><br><span class="line">                    rl.question(<span class="string">&#x27;Details: &#x27;</span>,<span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                       invoiceItemArray.push(answer);</span><br><span class="line">                        rl.question(<span class="string">&#x27;UnitPrice: &#x27;</span>, <span class="function">(<span class="params">answer</span>) =&gt;</span> &#123;</span><br><span class="line">                           invoiceItemArray.push(answer);</span><br><span class="line">                           invoice.invoiceItems.push(&#123;</span><br><span class="line">                               <span class="string">&quot;quantity&quot;</span>:invoiceItemArray[<span class="number">0</span>],</span><br><span class="line">                               <span class="string">&quot;details&quot;</span>: invoiceItemArray[<span class="number">1</span>],</span><br><span class="line">                               <span class="string">&quot;unitPrice&quot;</span>: invoiceItemArray[<span class="number">2</span>]</span><br><span class="line">                            &#125;);</span><br><span class="line">                            <span class="built_in">console</span>.log(<span class="string">&quot;ItemInformation Added&quot;</span>);</span><br><span class="line">                            rl.close();</span><br><span class="line">                           fillInvoiceItemsInformation();</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;n&quot;</span>:</span><br><span class="line">               rl.close();</span><br><span class="line">                <span class="keyword">return</span> fillExcelFile();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">&quot;Incorrectoption, Please enter &#x27;y&#x27; or &#x27;n&#x27;.&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="填入你的Excel文件"><a href="#填入你的Excel文件" class="headerlink" title="填入你的Excel文件"></a>填入你的Excel文件</h4><p>收集所有必需的**信息后，我们可以填入到Excel文件中。有关帐单信息和公司设置，我们可以从JavaScript数组中手动&#8203;&#8203;设置单元格中的每个值：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillExcelFile</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">&quot;-----------------------\nFilling in Excelfile\n-----------------------&quot;</span>);</span><br><span class="line">   fillBillingInfo();</span><br><span class="line">   fillCompanySetup();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillBillingInfo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">var</span> sheet = wb.getSheet(<span class="number">0</span>);</span><br><span class="line">   sheet.getCell(<span class="number">0</span>, <span class="number">2</span>).value(invoice.generalInfo[<span class="number">0</span>].invoiceNumber);</span><br><span class="line">   sheet.getCell(<span class="number">1</span>, <span class="number">1</span>).value(invoice.generalInfo[<span class="number">0</span>].invoiceDate);</span><br><span class="line">   sheet.getCell(<span class="number">2</span>, <span class="number">2</span>).value(invoice.generalInfo[<span class="number">0</span>].paymentDueDate);</span><br><span class="line">   sheet.getCell(<span class="number">3</span>, <span class="number">1</span>).value(invoice.generalInfo[<span class="number">0</span>].customerName);</span><br><span class="line">   sheet.getCell(<span class="number">4</span>, <span class="number">1</span>).value(invoice.generalInfo[<span class="number">0</span>].customerCompanyName);</span><br><span class="line">   sheet.getCell(<span class="number">5</span>, <span class="number">1</span>).value(invoice.generalInfo[<span class="number">0</span>].customerStreetAddress);</span><br><span class="line">   sheet.getCell(<span class="number">6</span>, <span class="number">1</span>).value(invoice.generalInfo[<span class="number">0</span>].customerCityStateZip);</span><br><span class="line">   sheet.getCell(<span class="number">3</span>, <span class="number">3</span>).value(invoice.generalInfo[<span class="number">0</span>].invoiceCompanyName);</span><br><span class="line">   sheet.getCell(<span class="number">4</span>, <span class="number">3</span>).value(invoice.generalInfo[<span class="number">0</span>].invoiceStreetAddress);</span><br><span class="line">   sheet.getCell(<span class="number">5</span>, <span class="number">3</span>).value(invoice.generalInfo[<span class="number">0</span>].invoiceCityStateZip);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillCompanySetup</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">var</span> sheet = wb.getSheet(<span class="number">1</span>);</span><br><span class="line">   sheet.getCell(<span class="number">2</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].yourName);</span><br><span class="line">   sheet.getCell(<span class="number">3</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].companyName);</span><br><span class="line">   sheet.getCell(<span class="number">4</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].addressLine1);</span><br><span class="line">   sheet.getCell(<span class="number">5</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].addressLine2);</span><br><span class="line">   sheet.getCell(<span class="number">6</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].addressLine3);</span><br><span class="line">   sheet.getCell(<span class="number">7</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].addressLine4);</span><br><span class="line">   sheet.getCell(<span class="number">8</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].addressLine5);</span><br><span class="line">   sheet.getCell(<span class="number">9</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].phone);</span><br><span class="line">   sheet.getCell(<span class="number">10</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].facsimile);</span><br><span class="line">   sheet.getCell(<span class="number">11</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].website);</span><br><span class="line">   sheet.getCell(<span class="number">12</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].email);</span><br><span class="line">   sheet.getCell(<span class="number">13</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].currencyAbbreviation);</span><br><span class="line">   sheet.getCell(<span class="number">14</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].beneficiary);</span><br><span class="line">   sheet.getCell(<span class="number">15</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].bank);</span><br><span class="line">   sheet.getCell(<span class="number">16</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].bankAddress);</span><br><span class="line">   sheet.getCell(<span class="number">17</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].accountNumber);</span><br><span class="line">   sheet.getCell(<span class="number">18</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].routingNumber);</span><br><span class="line">   sheet.getCell(<span class="number">19</span>, <span class="number">2</span>).value(invoice.companyDetails[<span class="number">0</span>].payableTo);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用的模板具有针对以上项目的特定行数。用户添加的数量可能会超过最大值。在这种情况下，我们可以简单地在工作表中添加更多行。在设置数组中表单中的项目之前，我们将添加行：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillInvoiceItems</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">var</span> sheet = wb.getSheet(<span class="number">0</span>);</span><br><span class="line">   <span class="keyword">var</span> rowsToAdd = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">if</span> (invoice.invoiceItems.length &gt; <span class="number">15</span>) &#123;</span><br><span class="line">       rowsToAdd = invoice.invoiceItems.length - <span class="number">15</span>;</span><br><span class="line">       sheet.addRows(<span class="number">22</span>, rowsToAdd);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">var</span> rowIndex = <span class="number">8</span>;</span><br><span class="line">   <span class="keyword">if</span> (invoice.invoiceItems.length &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; invoice.invoiceItems.length; i++) &#123;</span><br><span class="line">            sheet.getCell(rowIndex,<span class="number">1</span>).value(invoice.invoiceItems.quantity);</span><br><span class="line">            sheet.getCell(rowIndex,<span class="number">2</span>).value(invoice.invoiceItems.details);</span><br><span class="line">            sheet.getCell(rowIndex,<span class="number">3</span>).value(invoice.invoiceItems.unitPrice);</span><br><span class="line">            rowIndex++;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="将文档内容从Node-js导出到Excel文件"><a href="#将文档内容从Node-js导出到Excel文件" class="headerlink" title="将文档内容从Node.js导出到Excel文件"></a>将文档内容从Node.js导出到Excel文件</h4><p>在工作簿中填写完信息后，我们可以将工作簿导出到Excel文件中。为此，我们将使用excelio打开功能。在这种情况下，只需将日期输入文件名即可：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">exportExcelFile</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   excelIO.save(wb.toJSON(), <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">       fs.appendFileSync(<span class="string">&#x27;Invoice&#x27;</span> + <span class="keyword">new</span> <span class="built_in">Date</span>().valueOf() + <span class="string">&#x27;.xlsx&#x27;</span>, newBuffer(data), <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(err);</span><br><span class="line">       &#125;);</span><br><span class="line">       <span class="built_in">console</span>.log(<span class="string">&quot;Export success&quot;</span>);</span><br><span class="line">   &#125;, <span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">       <span class="built_in">console</span>.log(err);</span><br><span class="line">   &#125;, &#123; <span class="attr">useArrayBuffer</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>您可以使用上述代码片段将工作簿导出到Excel文件。您完成的文件将如下所示：</p>
+<p><img src="004.png"></p>
+<p>以上就是第一篇的全部内容，接下来的内容请参考下一篇：<br><strong>专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（二）</strong></p>
+<h4 id="相关资源："><a href="#相关资源：" class="headerlink" title="相关资源："></a>相关资源：</h4><ol>
+<li>完整的示例工程请参考附件。<br><a href="spreadsheetsnodejsappp.zip">spreadsheetsnodejsappp.zip</a></li>
+<li>本例会用到，以及可能用到的Excel和ssjson文件，见附件。<br><a href="billingInvoice.ssjson">billingInvoice.ssjson</a><br><a href="billingInvoiceTemplate.xlsx">billingInvoiceTemplate.xlsx</a></li>
+<li>注意，如果在运行时遇到“TypeError: Cannot read property ‘font’ of null”这样的错误时，需要先设置正确的授权，见代码中：<br><code>GC.Spread.Sheets.LicenseKey =&quot;&lt;YOUR KEY HERE&gt;&quot;</code><br>把授权的license字符串替换掉<YOUR KEY HERE>即可。</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/03/01/spjs-SpreadJS-on-Nodejs-2/" data-toggle="tooltip" data-placement="top" title="专题：服务端Node.js运行SpreadJS处理Excel的方案探讨（二）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/02/02/spjs-collaboration-system-architecture/" data-toggle="tooltip" data-placement="top" title="协同文档实现的流程、架构图以及相关解释">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                          <a class="tag" href="/tags/#Node.js" title="Node.js">Node.js</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

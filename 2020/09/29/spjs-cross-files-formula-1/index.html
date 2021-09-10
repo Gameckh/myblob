@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          SpreadJS结合Springboot实现跨文档数据公式关联（一） - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2020/09/29/spjs-cross-files-formula-1/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                    <h1>SpreadJS结合Springboot实现跨文档数据公式关联（一）</h1>
+                    <h2 class="subheading">———— 原理、需求和思路</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2020-09-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>版主（博主曾任葡萄城技术社区SpreadJS板块版主）在日常沟通、技术社区等与使用SpreadJS的小伙伴们交流的过程中，遇到了很多前后端结合的问题。其实从定位来看，SpreadJS无论从技术架构，还是产品设计层面，都是纯前端的控件。但它毕竟最终还是要结合后端环境来开发部署和应用的，所以我有了写这篇文章的想法。<br>本文利用了一个比较贴近用户的前后端结合的示例工程，来给大家演示一下SpreadJS的一些使用场景和实现技巧，希望能够帮助大家打开思路，能够更好地解决业务问题，提升用户体验。<br>由于涉及的功能点较多，代码量也不小，这个主题我会分为两篇文章来发布，本篇文章是这个系列的第一篇。</p>
+</blockquote>
+<p><strong>需求背景描述：</strong><br>SpreadJS是纯前端控件，受到JS前端语言运行环境的限制，无法原生实现跨Workbook的数据引用。但我们可以通过前后端结合的二次开发，结合业务场景来实现我们的需求。</p>
+<p><strong>需求/功能描述：</strong><br>1、 能够远程加载服务器端的ssjson、Excel文档到前端页面；<br>2、 可以分析表单中跨Workbook的公式引用，手动建立引用目标文档。当多人同时打开相关联的几个文档时，能够远程关联公式的数据（协同的一种）；<br>3、 能够建立单元格级别的数据关联，可以手动指定关联的目标文档的单元格；<br>4、 建立好关联单元格后，单元格内右侧出现 ＝、≠的符号，当关联的两个单元格的值相等时显示＝，不相等时显示≠；<br>5、 同步数据，自动将引用数据回填到引用单元格中。</p>
+<p><strong>实现思路：</strong><br>借助Ajax的帮助，上传、下载文件流已经可以完美解决远程文档加载和上传的问题（具体方法，参考前一篇博客《SpreadJS + Vue + Axios 实现服务端加载、上传Excel》）。<br>静态引用某个后端模板的值、或者是服务器端的数据，其实非常容易理解和实现。原理很简单，示例中采用了命名信息+自定义单元格的方式来实现，一方面实现了需求，另一方面也提供了良好的用户体验。</p>
+<p><strong>运行环境：</strong><br>Java SpringBoot+ SpreadJS</p>
+<p><strong>运行方法：</strong><br>解压后导入Eclipse（或其它IDE工具），Run Java Application ，访问localhost:8080即可。</p>
+<p><strong>关键代码讲解：</strong><br>限于篇幅，本文只讲单元格与后台文档执行关联、删除、同步数据的实现。远程同步、跨Workbook公式的实现，请参考第二篇：SpreadJS结合Springboot实现跨文档数据公式关联（二）。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomValidateCell</span>(<span class="params">hostMargin</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.typeName = <span class="string">&quot;CustomValidateCell&quot;</span>;</span><br><span class="line">    <span class="built_in">this</span>.hostMargin = hostMargin;</span><br><span class="line">        <span class="built_in">this</span>.margin = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">this</span>.color = <span class="string">&#x27;red&#x27;</span>;</span><br><span class="line">        <span class="built_in">this</span>.size = <span class="number">20</span>;</span><br><span class="line">        <span class="built_in">this</span>.sideLength = <span class="number">500</span>;</span><br><span class="line">        <span class="built_in">this</span>.eq = <span class="string">&quot;lib/eq.png&quot;</span>;</span><br><span class="line">        <span class="built_in">this</span>.neq = <span class="string">&quot;lib/neq.png&quot;</span>;</span><br><span class="line">        <span class="built_in">this</span>.unknown = <span class="string">&quot;lib/unknown.png&quot;</span>;</span><br><span class="line">        <span class="built_in">this</span>.backgroundImage = <span class="built_in">this</span>.unknown;</span><br><span class="line">&#125;</span><br><span class="line">CustomValidateCell.prototype = <span class="keyword">new</span> GC.Spread.Sheets.CellTypes.Text();</span><br><span class="line"><span class="comment">// 渲染方法，用于实现＝和≠的图标渲染（背景logo）</span></span><br><span class="line">CustomValidateCell.prototype.paint = <span class="function"><span class="keyword">function</span> (<span class="params">ctx, value, x, y, w, h, style, options</span>) </span>&#123;</span><br><span class="line">    style.hAlign = GC.Spread.Sheets.HorizontalAlign.left;</span><br><span class="line">    GC.Spread.Sheets.CellTypes.Text.prototype.paint.call(<span class="built_in">this</span>, ctx, value, x, y, w, h, style, options);</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (!ctx) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> tag = options.sheet.getTag(options.row, options.col, options.sheetArea);</span><br><span class="line">    <span class="keyword">var</span> startX = x + w - <span class="built_in">this</span>.size - <span class="built_in">this</span>.margin;</span><br><span class="line">    <span class="keyword">var</span> startY = y + (h - <span class="built_in">this</span>.size) / <span class="number">2</span> - <span class="built_in">this</span>.margin;</span><br><span class="line">    style.backgroundImage = <span class="built_in">this</span>.backgroundImage;</span><br><span class="line">    GC.Spread.Sheets.CellTypes.Text.prototype.paint.call(<span class="built_in">this</span>, ctx, <span class="string">&quot;&quot;</span>, startX, startY, <span class="built_in">this</span>.size, <span class="built_in">this</span>.size, style, options);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 监听鼠标动作和位置</span></span><br><span class="line">CustomValidateCell.prototype.getHitInfo = <span class="function"><span class="keyword">function</span> (<span class="params">x, y, cellStyle, cellRect, context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> info = &#123;</span><br><span class="line">        <span class="attr">x</span>: x,</span><br><span class="line">        <span class="attr">y</span>: y,</span><br><span class="line">        <span class="attr">row</span>: context.row,</span><br><span class="line">        <span class="attr">col</span>: context.col,</span><br><span class="line">        <span class="attr">cellStyle</span>: cellStyle,</span><br><span class="line">        <span class="attr">cellRect</span>: cellRect,</span><br><span class="line">        <span class="attr">sheetArea</span>: context.sheetArea</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">var</span> hitX = x;</span><br><span class="line">    <span class="keyword">var</span> hitY = y;</span><br><span class="line">    x = cellRect.x;</span><br><span class="line">    y = cellRect.y;</span><br><span class="line">    <span class="keyword">var</span> w = cellRect.width;</span><br><span class="line">    <span class="keyword">var</span> h = cellRect.height;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> startX = x + w - <span class="built_in">this</span>.size + <span class="built_in">this</span>.margin;</span><br><span class="line">    <span class="keyword">var</span> startY = y + (h - <span class="built_in">this</span>.size) / <span class="number">2</span> + <span class="built_in">this</span>.margin;</span><br><span class="line">    <span class="keyword">var</span> endX = x + w - <span class="built_in">this</span>.margin;</span><br><span class="line">    <span class="keyword">var</span> endY = y + (h + <span class="built_in">this</span>.size) / <span class="number">2</span> - <span class="built_in">this</span>.margin;</span><br><span class="line">    <span class="comment">// 这里判断逻辑参考paint中绘制的逻辑</span></span><br><span class="line">    <span class="keyword">if</span> (hitX &gt; startX &amp;&amp; hitX &lt; endX &amp;&amp; hitY &gt; startY &amp;&amp; hitY &lt; endY) &#123;</span><br><span class="line">        info.isReservedLocation = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> info;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 添加鼠标移入事件，弹窗显示引用信息</span></span><br><span class="line">CustomValidateCell.prototype.processMouseEnter = <span class="function"><span class="keyword">function</span> (<span class="params">hitInfo</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> sheet = hitInfo.sheet;</span><br><span class="line">    <span class="keyword">if</span> (sheet &amp;&amp; hitInfo.isReservedLocation) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">this</span>._toolTipElement) &#123;</span><br><span class="line">            <span class="keyword">var</span> div = <span class="built_in">document</span>.createElement(<span class="string">&quot;div&quot;</span>);</span><br><span class="line">            $(div).css(<span class="string">&quot;position&quot;</span>, <span class="string">&quot;absolute&quot;</span>)</span><br><span class="line">                .css(<span class="string">&quot;border&quot;</span>, <span class="string">&quot;1px #C0C0C0 solid&quot;</span>)</span><br><span class="line">                .css(<span class="string">&quot;box-shadow&quot;</span>, <span class="string">&quot;1px 2px 5px rgba(0,0,0,0.4)&quot;</span>)</span><br><span class="line">                .css(<span class="string">&quot;font&quot;</span>, <span class="string">&quot;9pt Arial&quot;</span>)</span><br><span class="line">                .css(<span class="string">&quot;background&quot;</span>, <span class="string">&quot;white&quot;</span>)</span><br><span class="line">                .css(<span class="string">&quot;padding&quot;</span>, <span class="number">5</span>)</span><br><span class="line">                                .attr(<span class="string">&quot;class&quot;</span>,<span class="string">&quot;toolTipElement&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">this</span>._toolTipElement = div;</span><br><span class="line">        &#125;</span><br><span class="line">        validateCellForCustomerCell(hitInfo.row, hitInfo.col, <span class="built_in">this</span>);</span><br><span class="line">        $(<span class="built_in">this</span>._toolTipElement).html($(<span class="string">&#x27;#validateCellInfo&#x27;</span>).html())</span><br><span class="line">            .css(<span class="string">&quot;top&quot;</span>, hitInfo.y + <span class="built_in">this</span>.hostMargin.y + <span class="number">15</span>)</span><br><span class="line">            .css(<span class="string">&quot;left&quot;</span>, hitInfo.x + <span class="built_in">this</span>.hostMargin.x + <span class="number">15</span>);</span><br><span class="line">        $(<span class="built_in">this</span>._toolTipElement).hide();</span><br><span class="line">        <span class="built_in">document</span>.body.insertBefore(<span class="built_in">this</span>._toolTipElement, <span class="literal">null</span>);</span><br><span class="line">        $(<span class="built_in">this</span>._toolTipElement).show(<span class="string">&quot;fast&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>._toolTipElement) &#123;</span><br><span class="line">            $(<span class="string">&quot;.toolTipElement&quot;</span>).remove();</span><br><span class="line">            <span class="built_in">this</span>._toolTipElement = <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 销毁弹窗</span></span><br><span class="line">CustomValidateCell.prototype.processMouseLeave = <span class="function"><span class="keyword">function</span> (<span class="params">hitInfo</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> sheet = hitInfo.sheet;</span><br><span class="line">        $(<span class="string">&quot;.toolTipElement&quot;</span>).remove();</span><br><span class="line">    <span class="built_in">this</span>._toolTipElement = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码，采用自定义单元格，实现了关联数据、显示＝或≠图标，弹窗显示引用信息等功能。如图：<br><img src="001.png"><br>具体实现细节，请结合注释食用。完整Demo参考附件。</p>
+<p><strong>完整Demo参考：</strong><br><a href="SpreadJS_SpringBoot.zip">SpreadJS_SpringBoot.zip</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/09/30/spjs-cross-files-formula-2/" data-toggle="tooltip" data-placement="top" title="SpreadJS结合Springboot实现跨文档数据公式关联（二）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/28/spjs-vue-axios-upload-download/" data-toggle="tooltip" data-placement="top" title="SpreadJS + Vue + Axios 实现服务端加载、上传Excel">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

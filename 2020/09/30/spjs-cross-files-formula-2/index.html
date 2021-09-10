@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          SpreadJS结合Springboot实现跨文档数据公式关联（二） - KevinChen&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://chenkaihua.top/2020/09/30/spjs-cross-files-formula-2/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KevinChen&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                    <h1>SpreadJS结合Springboot实现跨文档数据公式关联（二）</h1>
+                    <h2 class="subheading">———— 如何实现多屏协同数据关联（注意不是协同编辑）以及如何跨Workbook公式的解析、关联</h2>
+                    <span class="meta">
+                        Posted by Kevin on
+                        2020-09-30
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>版主（博主曾任葡萄城技术社区SpreadJS板块版主）在日常沟通、技术社区等与使用SpreadJS的小伙伴们交流的过程中，遇到了很多前后端结合的问题。其实从定位来看，SpreadJS无论从技术架构，还是产品设计层面，都是纯前端的控件。但它毕竟最终还是要结合后端环境来开发部署和应用的，所以我有了写这篇文章的想法。<br>本文利用了一个比较贴近用户的前后端结合的示例工程，来给大家演示一下SpreadJS的一些使用场景和实现技巧，希望能够帮助大家打开思路，能够更好地解决业务问题，提升用户体验。<br>由于涉及的功能点较多，代码量也不小，这个主题我会分为两篇文章来发布，本篇文章是这个系列的第二篇。</p>
+</blockquote>
+<p><strong>实现思路：</strong><br>本文是系列文章第二篇，主要讲解如何实现多屏协同数据关联（注意不是协同编辑）以及如何跨Workbook公式的解析、关联，本例采用了SpringBoot的WebSocket来实现页面终端的实时关联。</p>
+<p><strong>运行环境：</strong><br>Java SpringBoot+ SpreadJS</p>
+<p><strong>运行方法：</strong><br>解压后导入Eclipse（或其它IDE工具），Run Java Application ，访问localhost:8080即可。</p>
+<p><strong>建立Websocket服务关键代码讲解：</strong><br>这段主要讲解前端JavaScript结合Java端如何建立Websocket服务，实现消息推送服务。如果对这方面比较精通的小伙伴，可以忽略，直接跳到下一小结。<br>Java实现部分：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Socket管理器：用来管理WebSocket连接，通知后台连接状态；</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * socket管理器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketManager</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ConcurrentHashMap&lt;String, WebSocketSession&gt; manager = <span class="keyword">new</span> ConcurrentHashMap&lt;String, WebSocketSession&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(String key, WebSocketSession webSocketSession)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;新添加webSocket连接 &#123;&quot;</span>+key+<span class="string">&quot;&#125; &quot;</span>);</span><br><span class="line">        manager.put(key, webSocketSession);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;移除webSocket连接 &#123;&quot;</span>+key+<span class="string">&quot;&#125; &quot;</span>);</span><br><span class="line">        manager.remove(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> WebSocketSession <span class="title">get</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;获取webSocket连接 &#123;&quot;</span>+key+<span class="string">&quot;&#125;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> manager.get(key);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// WebSocket配置类，用来设置点对点、广播的地址和参数：</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * WebSocketConfig配置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;deprecation&quot;)</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebSocketMessageBroker</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> WebSocketDecoratorFactory webSocketDecoratorFactory;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> PrincipalHandshakeHandler principalHandshakeHandler;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * myUrl</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        registry.addEndpoint(<span class="string">&quot;/myUrl&quot;</span>)</span><br><span class="line">                .setAllowedOrigins(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">                .setHandshakeHandler(principalHandshakeHandler)</span><br><span class="line">                .withSockJS();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * queue 点对点</span></span><br><span class="line"><span class="comment">         * topic 广播</span></span><br><span class="line"><span class="comment">         * user 点对点前缀</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        registry.enableSimpleBroker(<span class="string">&quot;/queue&quot;</span>, <span class="string">&quot;/topic&quot;</span>);</span><br><span class="line">        registry.setUserDestinationPrefix(<span class="string">&quot;/user&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureWebSocketTransport</span><span class="params">(WebSocketTransportRegistration registration)</span> </span>&#123;</span><br><span class="line">        registration.addDecoratorFactory(webSocketDecoratorFactory);</span><br><span class="line">        <span class="keyword">super</span>.configureWebSocketTransport(registration);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 装饰类，扩展了握手挥手的功能，可以在这里加入一些自定义逻辑</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 服务端和客户端在进行握手挥手时会被执行</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketDecoratorFactory</span> <span class="keyword">implements</span> <span class="title">WebSocketHandlerDecoratorFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandler <span class="title">decorate</span><span class="params">(WebSocketHandler handler)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WebSocketHandlerDecorator(handler) &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterConnectionEstablished</span><span class="params">(WebSocketSession session)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;建立连接  sessionId = &#123;&quot;</span>+session.getId()+<span class="string">&quot;&#125;&quot;</span>);</span><br><span class="line">                Principal principal = session.getPrincipal();</span><br><span class="line">                <span class="keyword">if</span> (principal != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;key = &#123;&quot;</span>+principal.getName()+<span class="string">&quot;&#125; 存入&quot;</span>);</span><br><span class="line">                    <span class="comment">//Test 身份校验成功，缓存socket连接</span></span><br><span class="line">                    SocketManager.add(principal.getName(), session);</span><br><span class="line">                &#125;</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">                <span class="keyword">super</span>.afterConnectionEstablished(session);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterConnectionClosed</span><span class="params">(WebSocketSession session, CloseStatus closeStatus)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;退出连接  sessionId = &#123;&quot;</span>+session.getId()+<span class="string">&quot;&#125;&quot;</span>);</span><br><span class="line">                Principal principal = session.getPrincipal();</span><br><span class="line">                <span class="keyword">if</span> (principal != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">//Test 身份校验成功，移除socket连接</span></span><br><span class="line">                    SocketManager.remove(principal.getName());</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">super</span>.afterConnectionClosed(session, closeStatus);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 身份管理</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  Principal</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrincipalHandshakeHandler</span> <span class="keyword">extends</span> <span class="title">DefaultHandshakeHandler</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Principal <span class="title">determineUser</span><span class="params">(ServerHttpRequest request, WebSocketHandler wsHandler, Map&lt;String, Object&gt; attributes)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (request <span class="keyword">instanceof</span> ServletServerHttpRequest) &#123;</span><br><span class="line">            ServletServerHttpRequest servletServerHttpRequest = (ServletServerHttpRequest) request;</span><br><span class="line">            HttpServletRequest httpRequest = servletServerHttpRequest.getServletRequest();</span><br><span class="line">            <span class="keyword">final</span> String token = httpRequest.getParameter(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (StringUtils.isEmpty(token)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Principal() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> token;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 控制器：只展示了一个方法的实现，本例中只有点对点消息的场景，如果用到广播场景，请参考完整示例</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * 点对点发消息，这边需要注意，由于前端传过来json数据，所以使用<span class="doctag">@RequestBody</span></span></span><br><span class="line"><span class="comment">             * 这边需要前端开通var socket = new SockJS(host+&#x27;/myUrl&#x27; + &#x27;?token=4567&#x27;);   token为指定name</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> map</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@MessageMapping(&quot;/sendToWorkbook&quot;)</span></span><br><span class="line">    <span class="meta">@SendToUser(&quot;/queue/sendToWorkbook&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMyUser</span><span class="params">(<span class="meta">@RequestBody</span> Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;map = &#123;&quot;</span>+map+<span class="string">&quot;&#125;&quot;</span>);</span><br><span class="line">        WebSocketSession webSocketSession = SocketManager.get(map.get(<span class="string">&quot;referFile&quot;</span>));</span><br><span class="line">        <span class="keyword">if</span> (webSocketSession != <span class="keyword">null</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;sessionId = &#123;&quot;</span>+webSocketSession.getId()+<span class="string">&quot;&#125;&quot;</span>);</span><br><span class="line">            template.convertAndSendToUser(map.get(<span class="string">&quot;referFile&quot;</span>), <span class="string">&quot;/queue/sendUser&quot;</span>, map.get(<span class="string">&quot;data&quot;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>前端JavaScript实现部分：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*****************WebSocket*********************/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> stompClient = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">var</span> host=<span class="string">&quot;http://localhost:8080&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setConnected</span>(<span class="params">connected</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//console.log(connected?&quot;connected&quot;:&quot;disConnected&quot;);</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">connect</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> socket = <span class="keyword">new</span> SockJS(host+<span class="string">&#x27;/myUrl&#x27;</span> + <span class="string">&#x27;?token=&#x27;</span>+fileName);</span><br><span class="line">    stompClient = Stomp.over(socket);</span><br><span class="line">    stompClient.connect(&#123;&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">frame</span>) </span>&#123;</span><br><span class="line">        setConnected(<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">//console.log(&#x27;Connected:&#x27; + frame);</span></span><br><span class="line">        stompClient.subscribe(<span class="string">&#x27;/user/queue/sendUser&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">                        <span class="comment">//alert(1);</span></span><br><span class="line">            showResponse(response.body);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">disconnect</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (stompClient != <span class="literal">null</span>) &#123;</span><br><span class="line">        stompClient.disconnect();</span><br><span class="line">    &#125;</span><br><span class="line">    setConnected(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">send</span>(<span class="params">referFile, data, isValued</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//stompClient.send(&quot;/sendToWorkbook&quot;, &#123;&#125;, JSON.stringify(&#123;isValued:isValued, message:message&#125;));</span></span><br><span class="line">        data.isValued = isValued;</span><br><span class="line">        stompClient.send(<span class="string">&quot;/sendToWorkbook&quot;</span>, &#123;&#125;, <span class="built_in">JSON</span>.stringify(&#123;<span class="attr">referFile</span>: referFile, <span class="attr">data</span>: <span class="built_in">JSON</span>.stringify(data) &#125;));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showResponse</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response);</span><br><span class="line">        <span class="comment">// showResponse用来作为响应消息的入口，帮我们处理得到消息后的逻辑。这部分请参考part3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*****************WebSocket End*********************/</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>跨文档数据公式关联详解：</strong><br>在Excel中，针对跨Workbook的公式引用，Excel对它们的处理和保存方式是：<br>1、在包含外部引用的单元格中，对引用目标以[int]的形式保存在sheet中；<br><img src="001.png"></p>
+<p>2、每个[int]对应一个externalLink.xml的组件来描述。<br><img src="002.png"></p>
+<p>SpreadJS由于runtime所限（JS语言本身不能实现引用文件等操作），无法兼容Excel的外部引用，因此无法读取和解析externalLink.xml的内容（这句只是官方解释，实际上读取、解析没问题，但最多只能做到保留这部分内容不丢失，无法实现实际功能，且还要考虑用户修改、与Excel中内容显示不一致、与其它公式嵌套引用等问题），只能拿到[int]的表达式。所以需要客户手动关联[int]与外部文件的引用关系。<br>以下重点讲解如何实现跨Workbook公式的引用（公式的计算SpreadJS有专用API，本例不做赘述）。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 重点代码部分，这里只演示最关键的一个function</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showResponse</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!response)&#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">&quot;收到Websocket空信息&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> asyncDatas = <span class="built_in">JSON</span>.parse(response);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">var</span> spread = GC.Spread.Sheets.findControl(<span class="string">&#x27;ss&#x27;</span>);</span><br><span class="line">        spread.suspendCalcService(<span class="literal">true</span>);</span><br><span class="line">        spread.suspendPaint();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(asyncDatas.isValued)&#123;</span><br><span class="line">                asyncDatas.formulas.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">d</span>)</span>&#123;</span><br><span class="line">                        <span class="keyword">var</span> sheet = spread.getSheetFromName(d.sheetName);</span><br><span class="line">                        <span class="keyword">var</span> formula = sheet.getFormula(d.row, d.col);</span><br><span class="line">                        sheet.setTag(d.row, d.col, &#123;<span class="attr">formula</span>: formula&#125;);</span><br><span class="line">                        sheet.setFormula(d.row, d.col, <span class="literal">null</span>);</span><br><span class="line">                        sheet.setValue(d.row, d.col, d.value);</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">var</span> flg = <span class="literal">true</span>;</span><br><span class="line">                relations.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">r</span>)</span>&#123;</span><br><span class="line">                        r.referFile == asyncDatas.referFile? flg=!flg: flg;</span><br><span class="line">                &#125;);</span><br><span class="line">                flg? relations.push(asyncDatas):<span class="literal">false</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">var</span> formulas = asyncDatas.formulas;</span><br><span class="line">                formulas.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">f</span>)</span>&#123;</span><br><span class="line">                        <span class="keyword">var</span> formula = f.formula;</span><br><span class="line">                        <span class="keyword">var</span> sheetName = formula.split(<span class="string">&quot;!&quot;</span>)[<span class="number">0</span>];</span><br><span class="line">                        sheetName = sheetName.substring(sheetName.indexOf(<span class="string">&quot;]&quot;</span>)+<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">var</span> sheet = spread.getSheetFromName(sheetName);</span><br><span class="line">                        <span class="keyword">if</span>(sheet)&#123;</span><br><span class="line">                                <span class="keyword">var</span> range = GC.Spread.Sheets.CalcEngine.formulaToRanges(sheet, formula, <span class="number">0</span>, <span class="number">0</span>)[<span class="number">0</span>].ranges[<span class="number">0</span>];</span><br><span class="line">                                f.value = sheet.getValue(range.row, range.col);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="built_in">console</span>.log(f);</span><br><span class="line">                &#125;);</span><br><span class="line">                send(asyncDatas.loadedFile, asyncDatas, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        spread.resumePaint();</span><br><span class="line">        spread.resumeCalcService(<span class="literal">false</span>);       </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>完整Demo参考：</strong><br><a href="SpreadJS_SpringBoot.zip">SpreadJS_SpringBoot.zip</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/10/10/rn-Nonviolent-Communication/" data-toggle="tooltip" data-placement="top" title="非暴力沟通 读书笔记">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/09/29/spjs-cross-files-formula-1/" data-toggle="tooltip" data-placement="top" title="SpreadJS结合Springboot实现跨文档数据公式关联（一）">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SpreadJS" title="SpreadJS">SpreadJS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kevin-chenkaihua">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KevinChen&#39;s Blog 2021
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://chenkaihua.top/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+<div id="totop" style="position:fixed;bottom:50px;right:30px;">
+  <a title="返回顶部"><img style="cursor: pointer;" src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://chenkaihua.top/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
